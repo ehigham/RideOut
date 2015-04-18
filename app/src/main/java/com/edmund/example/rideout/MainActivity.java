@@ -34,6 +34,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends ActionBarActivity implements
@@ -44,7 +45,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * The desired interval for location updates. Inexact. Updates may be more or less frequent.
      */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 100;
 
     /**
      * The fastest rate for active location updates. Exact. Updates will never be more frequent
@@ -79,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
+    protected TextView mLastUpdateTimeDiffTextView;
 
     /**
      * Tracks the status of the location updates request. Value changes when the user presses the
@@ -90,6 +92,7 @@ public class MainActivity extends ActionBarActivity implements
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
+    protected String mLastUpdateTimeDiff;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,9 +105,11 @@ public class MainActivity extends ActionBarActivity implements
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
+        mLastUpdateTimeDiffTextView = (TextView) findViewById(R.id.last_update_time_diff_text);
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
+        mLastUpdateTimeDiff = "";
 
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
@@ -246,6 +251,7 @@ public class MainActivity extends ActionBarActivity implements
             mLatitudeTextView.setText(String.valueOf(mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.valueOf(mCurrentLocation.getLongitude()));
             mLastUpdateTimeTextView.setText(mLastUpdateTime);
+            mLastUpdateTimeDiffTextView.setText(mLastUpdateTimeDiff);
         }
     }
 
@@ -314,7 +320,7 @@ public class MainActivity extends ActionBarActivity implements
         // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+            mLastUpdateTime = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
             updateUI();
         }
 
@@ -332,10 +338,13 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        mLastUpdateTimeDiff = mLastUpdateTime;
+        mLastUpdateTime = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+        mLastUpdateTimeDiff = Calc.HrsMinsSecsDiff(mLastUpdateTimeDiff,mLastUpdateTime);
+
         updateUI();
-        Toast.makeText(this, getResources().getString(R.string.location_updated_message),
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, getResources().getString(R.string.location_updated_message),
+        //        Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -352,7 +361,6 @@ public class MainActivity extends ActionBarActivity implements
         // onConnectionFailed.
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
-
 
     /**
      * Stores activity data in the Bundle.

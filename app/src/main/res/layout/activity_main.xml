@@ -90,4 +90,23 @@
         android:layout_marginLeft="@dimen/small_margin_left"
         android:layout_toRightOf="@+id/last_update_time_label"
         android:textSize="@dimen/default_text_size" />
+
+    <TextView
+        android:id="@+id/last_update_time_diff_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/last_update_time_label"
+        android:text="@string/time_between_update"
+        android:textSize="@dimen/default_text_size" />
+
+
+    <TextView
+        android:id="@+id/last_update_time_diff_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/last_update_time_diff_label"
+        android:layout_marginLeft="@dimen/small_margin_left"
+        android:layout_toRightOf="@+id/last_update_time_diff_label"
+        android:textSize="@dimen/default_text_size" />
 </RelativeLayout>

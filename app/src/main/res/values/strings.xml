@@ -21,6 +21,7 @@
     <string name="stop_updates">Stop updates</string>
 
     <string name="last_update_time_label">Last location update time: </string>
+    <string name="time_between_update">Time elapsed between updates: </string>
 
     <string name="location_updated_message">Location updated</string>
 
