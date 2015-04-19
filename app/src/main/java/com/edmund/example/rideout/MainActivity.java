@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+//import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,7 +34,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class MainActivity extends ActionBarActivity implements
@@ -97,9 +96,7 @@ public class MainActivity extends ActionBarActivity implements
     /**
      * ISO8601 - Compliant date format.
      */
-    protected static final DateFormat dateFormat =
-            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
+    protected static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -348,10 +345,8 @@ public class MainActivity extends ActionBarActivity implements
         mLastUpdateTimeDiff = mLastUpdateTime;
         mLastUpdateTime = dateFormat.format(new Date());
         mLastUpdateTimeDiff = Calc.HrsMinsSecsDiff(mLastUpdateTimeDiff,mLastUpdateTime);
-
-        Log.i(TAG,"Location Changed at:" + dateFormat.format(new Date()));
-
         updateUI();
+
         //Toast.makeText(this, getResources().getString(R.string.location_updated_message),
         //        Toast.LENGTH_SHORT).show();
     }
