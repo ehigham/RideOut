@@ -16,9 +16,13 @@
 
 package com.edmund.example.rideout;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -46,12 +50,13 @@ public class MainActivity extends ActionBarActivity {
      */
     protected static Boolean mRequestingLocationUpdates;
 
-    protected static LocationManager locationManager;
+    protected static LocationManager mLocationManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActionBar actionBar = getActionBar();
 
         // Locate the UI widgets.
         mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
@@ -64,7 +69,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
-        locationManager = new LocationManager(this);
+        mLocationManager = new LocationManager(this);
     }
 
     /**
@@ -75,7 +80,7 @@ public class MainActivity extends ActionBarActivity {
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
-            locationManager.startLocationUpdates();
+            mLocationManager.startLocationUpdates();
         }
     }
 
@@ -87,7 +92,7 @@ public class MainActivity extends ActionBarActivity {
         if (mRequestingLocationUpdates) {
             mRequestingLocationUpdates = false;
             setButtonsEnabledState();
-            locationManager.stopLocationUpdates();
+            mLocationManager.stopLocationUpdates();
         }
     }
 
@@ -110,17 +115,17 @@ public class MainActivity extends ActionBarActivity {
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     protected static void updateUI() {
-        if (locationManager.mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.valueOf(locationManager.mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(locationManager.mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(locationManager.mLastUpdateTime);
+        if (mLocationManager.mCurrentLocation != null) {
+            mLatitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLatitude()));
+            mLongitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLongitude()));
+            mLastUpdateTimeTextView.setText(mLocationManager.mLastUpdateTime);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        locationManager.connect();
+        mLocationManager.connect();
     }
 
     @Override
@@ -129,20 +134,20 @@ public class MainActivity extends ActionBarActivity {
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
-        if (mRequestingLocationUpdates) locationManager.resumeLocationServices();
+        if (mRequestingLocationUpdates) mLocationManager.resumeLocationServices();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        locationManager.pauseLocationServices();
+        mLocationManager.pauseLocationServices();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        locationManager.disconnect();
+        mLocationManager.disconnect();
     }
 
     /**
@@ -150,8 +155,30 @@ public class MainActivity extends ActionBarActivity {
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
         savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
-        savedInstanceState.putParcelable(LOCATION_KEY, locationManager.mCurrentLocation);
-        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY,locationManager.mLastUpdateTime);
+        savedInstanceState.putParcelable(LOCATION_KEY, mLocationManager.mCurrentLocation);
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY,mLocationManager.mLastUpdateTime);
         super.onSaveInstanceState(savedInstanceState);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Log.i(TAG,"Settings menu selected");
+                //openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 }
