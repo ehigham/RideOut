@@ -16,7 +16,6 @@
 
 package com.edmund.example.rideout;
 
-import android.location.Location;
 import android.util.Log;
 
 public final class Calc {
@@ -30,26 +29,28 @@ public final class Calc {
     public static String HrsMinsSecsDiff(String string1, String string2) {
         Log.d("Calc","Call to HrsMinsSecsDiff: " + string1 + "\t" + string2);
 
-        if (string1.length() == 0) { return "00.00";}
+       // if (string1.length() == 0) { return "00.00";}
 
-        float diff = HrsMinsSecs2Float(string2) - HrsMinsSecs2Float(string1);
+       // float diff = HrsMinsSecs2Float(string2) - HrsMinsSecs2Float(string1);
 
-        return String.format("%2.2f",diff);
+        //return String.format("%2.2f",diff);
+
+        return "00.00";
     }
 
     /**
      *
      * @param tmpTime of format HH:mm:ss.SSS
-     * @return
+     * @return float in seconds
      * @throws NumberFormatException
      */
     private static float HrsMinsSecs2Float(String tmpTime) {
         tmpTime = tmpTime.trim();
 
-        float hours = new Float(tmpTime.substring(0, 2));
-        float minutes = new Float(tmpTime.substring(3, 5));
-        float seconds = new Float(tmpTime.substring(6, 8));
-        float millis = new Float(tmpTime.substring(9,tmpTime.length()));
+        float hours = Float.valueOf(tmpTime.substring(0, 2));
+        float minutes = Float.valueOf(tmpTime.substring(3, 5));
+        float seconds = Float.valueOf(tmpTime.substring(6, 8));
+        float millis = Float.valueOf(tmpTime.substring(9,tmpTime.length()));
 
         seconds += minutes * 60.0f + hours * 3600.0f;
 
@@ -59,7 +60,7 @@ public final class Calc {
     /**
      * Converts an integer time to Hours:Minutes:Seconds format
      * @param seconds integer time in seconds to convert to Hrs:Mins:Seconds
-     * @return
+     * @return time format in HH:MM:SS
      */
     private static String int2HrsMinsSecs(int seconds){
         int hrs = 0;

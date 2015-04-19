@@ -94,6 +94,13 @@ public class MainActivity extends ActionBarActivity implements
     protected String mLastUpdateTime;
     protected String mLastUpdateTimeDiff;
 
+    /**
+     * ISO8601 - Compliant date format.
+     */
+    protected static final DateFormat dateFormat =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -320,7 +327,7 @@ public class MainActivity extends ActionBarActivity implements
         // is displayed as the activity is re-created.
         if (mCurrentLocation == null) {
             mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            mLastUpdateTime = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+            mLastUpdateTime = dateFormat.format(new Date());
             updateUI();
         }
 
@@ -339,8 +346,10 @@ public class MainActivity extends ActionBarActivity implements
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTimeDiff = mLastUpdateTime;
-        mLastUpdateTime = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+        mLastUpdateTime = dateFormat.format(new Date());
         mLastUpdateTimeDiff = Calc.HrsMinsSecsDiff(mLastUpdateTimeDiff,mLastUpdateTime);
+
+        Log.i(TAG,"Location Changed at:" + dateFormat.format(new Date()));
 
         updateUI();
         //Toast.makeText(this, getResources().getString(R.string.location_updated_message),
