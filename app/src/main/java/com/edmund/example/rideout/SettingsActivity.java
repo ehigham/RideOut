@@ -23,8 +23,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
 
-public class SettingsActivity extends PreferenceActivity implements
-        SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends PreferenceActivity /*implements
+        SharedPreferences.OnSharedPreferenceChangeListener*/ {
 
     public static final String KEY_PREF_SYNC_CONN = "pref_syncConnectionType";
 
@@ -48,7 +48,7 @@ public class SettingsActivity extends PreferenceActivity implements
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+/*    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(KEY_PREF_SYNC_CONN)) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
@@ -68,5 +68,5 @@ public class SettingsActivity extends PreferenceActivity implements
         super.onPause();
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
-    }
+    }*/
 }
