@@ -166,13 +166,15 @@ public class LocationManager implements ConnectionCallbacks,
         }
     }
 
-    protected void connect() {
-        mGoogleApiClient.connect();
-    }
+    /**
+     * Connect to the GoogleAPIClient
+     */
+    protected void connect() {mGoogleApiClient.connect();}
 
-    protected void disconnect() {
-        mGoogleApiClient.disconnect();
-    }
+    /**
+     * Disconnect the GoogleAPIClient
+     */
+    protected void disconnect() {mGoogleApiClient.disconnect();}
 
     /**
      * Runs when a GoogleApiClient object successfully connects.

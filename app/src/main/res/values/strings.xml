@@ -31,4 +31,6 @@
         No location detected. Make sure location is enabled on the device.
     </string>
 
+    <string name="splash_string">Remember, always ride within your abilities and the law.</string>
+
 </resources>
