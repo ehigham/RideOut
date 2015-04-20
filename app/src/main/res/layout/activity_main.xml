@@ -17,25 +17,6 @@
     android:layout_height="match_parent"
     android:padding="@dimen/layout_padding">
 
-<!--    <Button
-        android:id="@+id/start_updates_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="@dimen/ui_group_top_margin"
-        android:onClick="startUpdatesButtonHandler"
-        android:text="@string/start_updates" />
-
-    <Button
-        android:id="@+id/stop_updates_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/ui_group_top_margin"
-        android:enabled="false"
-        android:onClick="stopUpdatesButtonHandler"
-        android:text="@string/stop_updates" />-->
-
     <ToggleButton
         android:id="@+id/togglebutton"
         android:layout_width="wrap_content"
