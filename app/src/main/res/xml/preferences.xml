@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2015 Edmund Higham
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--    General Preferences -->
+    <PreferenceCategory
+        android:key="pref_general"
+        android:title="@string/pref_general" >
+
+        <!-- Splash Screen Preferences -->
+        <PreferenceScreen
+            android:key="pref_splash"
+            android:title="@string/splash" >
+            <CheckBoxPreference
+                android:key="pref_splash_toggle"
+                android:title="@string/splash_on_start"
+                android:defaultValue="true" />
+
+            <CheckBoxPreference
+                android:key="pref_splash_sound"
+                android:title="@string/splash_sounds"
+                android:defaultValue="true" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+    <!--    Data and Acquisition Preferences    -->
+    <PreferenceCategory
+        android:key="pref_data_acquisition"
+        android:title="@string/pref_data_acquisition" >
+        <CheckBoxPreference
+            android:key="pref_use_location_tracking"
+            android:title="@string/pref_location_tracking"
+            android:defaultValue="true" />
+
+        <ListPreference
+            android:key="pref_sample_frequency"
+            android:title="@string/pref_sample_frequency"
+            android:defaultValue="5"
+            android:entries="@array/pref_sample_frequency_titles"
+            android:entryValues="@array/pref_sample_frequency_values"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+
+        <PreferenceScreen
+            android:key="pref_sensors"
+            android:title="@string/pref_sensors" >
+            <CheckBoxPreference
+                android:key="pref_linear_accelerometers"
+                android:title="@string/pref_linear_accelerometers"
+                android:defaultValue="true"
+                android:contentDescription="@string/linear_accelerometer_description" />
+
+            <CheckBoxPreference
+                android:key="pref_gyro"
+                android:title="@string/pref_gyro"
+                android:defaultValue="true"
+                android:contentDescription="@string/gyro_description" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+
+</PreferenceScreen>
