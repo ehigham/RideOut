@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 //import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
@@ -38,8 +39,7 @@ public class MainActivity extends ActionBarActivity {
     protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
 
     // UI Widgets.
-    protected Button mStartUpdatesButton;
-    protected Button mStopUpdatesButton;
+    protected ToggleButton mLocationsToggle;
     protected static TextView mLastUpdateTimeTextView;
     protected static TextView mLatitudeTextView;
     protected static TextView mLongitudeTextView;
@@ -59,8 +59,7 @@ public class MainActivity extends ActionBarActivity {
         ActionBar actionBar = getActionBar();
 
         // Locate the UI widgets.
-        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
+        mLocationsToggle = (ToggleButton) findViewById(R.id.togglebutton);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
@@ -73,41 +72,25 @@ public class MainActivity extends ActionBarActivity {
     }
 
     /**
-     * Handles the Start Updates button and requests start of location updates. Does nothing if
-     * updates have already been requested.
+     * Handles the Toggle Updates button, and requests start/removal of location updates.
+     *
      */
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
-            mLocationManager.startLocationUpdates();
-        }
-    }
+    public void onToggleClicked(View view) {
+        // Is the toggle on?
+        boolean on = ((ToggleButton) view).isChecked();
 
-    /**
-     * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
-     * updates were not previously requested.
-     */
-    public void stopUpdatesButtonHandler(View view) {
-        if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
-            setButtonsEnabledState();
-            mLocationManager.stopLocationUpdates();
-        }
-    }
+        if (on) { // Enable Location Updates
 
-    /**
-     * Ensures that only one button is enabled at any time. The Start Updates button is enabled
-     * if the user is not requesting location updates. The Stop Updates button is enabled if the
-     * user is requesting location updates.
-     */
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
-        } else {
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
+            if (!mRequestingLocationUpdates){ // If updates are already requested, do nothing.
+                mRequestingLocationUpdates = true;
+                mLocationManager.startLocationUpdates();
+            }
+
+        } else { // Disable Location Updates
+            if (mRequestingLocationUpdates){ // If updates are not requested, do nothing.
+                mRequestingLocationUpdates = false;
+                mLocationManager.stopLocationUpdates();
+            }
         }
     }
 
