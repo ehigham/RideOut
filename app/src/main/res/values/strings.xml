@@ -48,7 +48,7 @@
 
         <!--    Strings Related to Sensors  -->
         <string name="pref_sensors">Sensors</string>
-        <string name="pref_key_sensors_description">Chose which sensors to use</string>
+        <string name="pref_key_sensors_description">Choose which sensors to use</string>
         <string name="pref_linear_accelerometers">Enable Linear Accelerometers</string>
         <string name="linear_accelerometer_description">Used to gather linear acceleration data</string>
         <string name="pref_gyro">Enable Gyroscopes</string>
@@ -58,4 +58,7 @@
     <string name="pref_reset">Reset Settings</string>
     <string name="pref_reset_data">Reset App</string>
     <string name="pref_reset_data_description">Reset all settings and data in app</string>
+    <string name="pref_reset_dialog">Confirm factory reset.
+        Warning: all data and settings will be removed.
+        This cannot be undone.</string>
 </resources>

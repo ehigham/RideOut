@@ -15,7 +15,6 @@ limitations under the License.
 
     <!--    General Preferences -->
     <PreferenceCategory
-        android:key="pref_general"
         android:title="@string/pref_general" >
 
     <CheckBoxPreference
@@ -27,8 +26,8 @@ limitations under the License.
 
     <!--    Data and Acquisition Preferences    -->
     <PreferenceCategory
-        android:key="pref_key_data_acquisition"
         android:title="@string/pref_data_acquisition" >
+
         <CheckBoxPreference
             android:key="pref_key_use_location_services"
             android:title="@string/pref_location_tracking"
@@ -46,7 +45,8 @@ limitations under the License.
         <PreferenceScreen
             android:key="pref_key_sensors"
             android:title="@string/pref_sensors"
-            android:summary="@string/pref_key_sensors_description">
+            android:summary="@string/pref_key_sensors_description"
+            android:persistent="false">
             <CheckBoxPreference
                 android:key="pref_key_enable_linear_accelerometers"
                 android:title="@string/pref_linear_accelerometers"
@@ -63,11 +63,14 @@ limitations under the License.
 
     <PreferenceCategory
         android:title="Factory Reset" >
-        <Preference
-            android:key="pref_reset_settings_to_default"
-            android:title="@string/pref_reset_data"
-            android:summary="@string/pref_reset_data_description"/>
-        </PreferenceCategory>
+<!--       <com.edmund.example.rideout.SettingsActivity.CustomDialogPreference
+            android:key="pref_key_factory_reset"
+           android:title="@string/pref_reset_data"
+            android:summary="Reset all data and settings"
+            android:dialogMessage="@string/pref_reset_dialog"
+            android:positiveButtonText="Confirm Factory Reset"
+            android:negativeButtonText="Cancel" />-->
+    </PreferenceCategory>
 
 
 </PreferenceScreen>

@@ -157,7 +157,6 @@ public class MainActivity extends ActionBarActivity {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Log.i(TAG,"Settings menu selected");
                 Intent settingsActivity = new Intent(getApplicationContext(), SettingsActivity.class);
                 startActivity(settingsActivity);
                 return true;

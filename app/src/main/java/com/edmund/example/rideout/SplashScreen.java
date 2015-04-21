@@ -27,7 +27,7 @@ import android.view.WindowManager;
 
 public class SplashScreen extends Activity {
 
-    private static boolean playSplashSound; //Set by PreferencesManager
+    protected static boolean playSplashSound; //Set by PreferencesManager
 
     private static Handler mHandler = new Handler();
 

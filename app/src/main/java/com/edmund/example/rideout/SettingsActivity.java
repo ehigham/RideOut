@@ -16,13 +16,17 @@
 
 package com.edmund.example.rideout;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.AttributeSet;
+import android.util.Log;
 
 public class SettingsActivity extends PreferenceActivity implements
                         OnSharedPreferenceChangeListener {
@@ -38,6 +42,7 @@ public class SettingsActivity extends PreferenceActivity implements
     public static final String PREF_KEY_SAMPLE_FREQUENCY  = "pref_key_sample_frequency";
     public static final String PREF_KEY_ENABLE_LINEAR_ACCELEROMETERS = "pref_key_enable_linear_accelerometers";
     public static final String PREF_KEY_ENABLE_GYROS  = "pref_key_enable_gyros";
+    public static final String PREF_KEY_FACTORY_RESET  = "pref_key_factory_reset";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +67,37 @@ public class SettingsActivity extends PreferenceActivity implements
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Preference mPreference;
         if (key.equals(KEY_PREF_SAMPLE_FREQUENCY)) {
-            Preference connectionPref = findPreference(key);
+            mPreference = findPreference(key);
             // Set summary to be the user-description for the selected value
-            connectionPref.setSummary(sharedPreferences.getString(key, "2 seconds"));
+            mPreference.setSummary(sharedPreferences.getString(key, "2 seconds"));
+        } else if (key.equals(PREF_KEY_SPLASH_SOUND)){
+            mPreference = findPreference(key);
+            SplashScreen.playSplashSound = mPreference.getSharedPreferences().getBoolean(key,true);
+            Log.i("PREF", "playSplashSound changed to " + String.valueOf(SplashScreen.playSplashSound));
         }
     }
 
-    public void onFactorySettingsReset(){
+    /**
+     * The mDialogPreference will display a dialog, and will persist the
+     * <code>true</code> when pressing the positive button and <code>false</code>
+     * otherwise. It will persist to the android:key specified in xml-preference.
+     */
+    public class CustomDialogPreference extends DialogPreference {
+
+        public CustomDialogPreference(Context context, AttributeSet attributeSet) {
+            super(context, attributeSet);
+        }
+
+        @Override
+        protected void onDialogClosed(boolean positiveResult) {
+            super.onDialogClosed(positiveResult);
+            persistBoolean(positiveResult);
+        }
+    }
+
+    public void onFactoryReset(){
 
     }
 }
