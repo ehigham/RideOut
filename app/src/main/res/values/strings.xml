@@ -12,19 +12,50 @@
      limitations under the License.
 -->
 <resources>
-    <string name="app_name">RideOut</string>
-    <string name="action_settings">Settings</string>
-    <string name="action_preferences">Preferences</string>
+    <!--    UI Strings      -->
+        <string name="app_name">RideOut</string>
+        <string name="action_settings">Settings</string>
+        <string name="action_preferences">Preferences</string>
 
-    <string name="latitude_label">Latitude: </string>
-    <string name="longitude_label">Longitude: </string>
+        <string name="latitude_label">Latitude: </string>
+        <string name="longitude_label">Longitude: </string>
 
-    <string name="last_update_time_label">Last location update time: </string>
+        <string name="last_update_time_label">Last location update time: </string>
 
-    <string name="no_location_detected">
-        No location detected. Make sure location is enabled on the device.
-    </string>
+        <string name="no_location_detected">
+            No location detected. Make sure location is enabled on the device.
+        </string>
 
-    <string name="splash_string">Remember, always ride within your abilities and the law.</string>
+        <string name="splash_string">Remember, always ride within your abilities and the law.</string>
 
+    <!--    Strings for Settings    -->
+        <string name="title_activity_settings">Settings</string>
+
+        <!-- General settings -->
+        <string name="pref_general">General</string>
+
+        <!-- Strings related to Splash Settings -->
+        <string name="splash_sound">Play colourful music on start-up</string>
+
+
+        <!-- Data Acquisition -->
+        <string name="pref_data_acquisition">Data Acquisition</string>
+
+        <string name="pref_location_tracking">Use Location Tracking Services</string>
+
+        <!-- Strings Related to GPS and Sensor sampling -->
+        <string name="pref_sample_frequency">GPS &amp; Sensor Sampling Frequency</string>
+
+        <!--    Strings Related to Sensors  -->
+        <string name="pref_sensors">Sensors</string>
+        <string name="pref_key_sensors_description">Chose which sensors to use</string>
+        <string name="pref_linear_accelerometers">Enable Linear Accelerometers</string>
+        <string name="linear_accelerometer_description">Used to gather linear acceleration data</string>
+        <string name="pref_gyro">Enable Gyroscopes</string>
+        <string name="gyro_description">Used to measure lean angle</string>
+
+
+    <string name="pref_reset">Reset Settings</string>
+    <string name="pref_reset_data">Reset App</string>
+    <string name="pref_reset_data_description">Reset all settings and data in app</string>
 </resources>

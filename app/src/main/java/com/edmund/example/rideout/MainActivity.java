@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActionBar actionBar = getActionBar();
+        getActionBar();
 
         // Locate the UI widgets.
         mLocationsToggle = (ToggleButton) findViewById(R.id.togglebutton);
@@ -149,6 +149,7 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -157,7 +158,8 @@ public class MainActivity extends ActionBarActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 Log.i(TAG,"Settings menu selected");
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                Intent settingsActivity = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(settingsActivity);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

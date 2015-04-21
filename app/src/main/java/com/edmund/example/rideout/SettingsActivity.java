@@ -17,16 +17,27 @@
 package com.edmund.example.rideout;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
+public class SettingsActivity extends PreferenceActivity implements
+                        OnSharedPreferenceChangeListener {
 
-public class SettingsActivity extends PreferenceActivity /*implements
-        SharedPreferences.OnSharedPreferenceChangeListener*/ {
+    public static final String KEY_PREF_SAMPLE_FREQUENCY = "pref_sample_frequency";
+    public static SharedPreferences mSharedPreferences;
 
-    public static final String KEY_PREF_SYNC_CONN = "pref_syncConnectionType";
+    /**
+     * Preference Keys
+     */
+    public static final String PREF_KEY_SPLASH_SOUND = "pref_key_splash_sound";
+    public static final String PREF_KEY_USE_LOCATION_SERVICES = "pref_key_use_location_services";
+    public static final String PREF_KEY_SAMPLE_FREQUENCY  = "pref_key_sample_frequency";
+    public static final String PREF_KEY_ENABLE_LINEAR_ACCELEROMETERS = "pref_key_enable_linear_accelerometers";
+    public static final String PREF_KEY_ENABLE_GYROS  = "pref_key_enable_gyros";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +47,8 @@ public class SettingsActivity extends PreferenceActivity /*implements
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new SettingsFragment())
                 .commit();
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
     public static class SettingsFragment extends PreferenceFragment {
@@ -48,25 +61,15 @@ public class SettingsActivity extends PreferenceActivity /*implements
         }
     }
 
-/*    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(KEY_PREF_SYNC_CONN)) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(KEY_PREF_SAMPLE_FREQUENCY)) {
             Preference connectionPref = findPreference(key);
             // Set summary to be the user-description for the selected value
-            connectionPref.setSummary(sharedPreferences.getString(key, ""));
+            connectionPref.setSummary(sharedPreferences.getString(key, "2 seconds"));
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
-    }
+    public void onFactorySettingsReset(){
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
-    }*/
+    }
 }

@@ -18,17 +18,16 @@ package com.edmund.example.rideout;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class SplashScreen extends Activity {
 
-    // Play sound on SplashScreen
-    public static boolean playSplashSound = false;
+    private static boolean playSplashSound; //Set by PreferencesManager
 
     private static Handler mHandler = new Handler();
 
@@ -46,23 +45,31 @@ public class SplashScreen extends Activity {
          */
         long splashInterval;
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        // Find out if the user has enabled splash screen
+        getUserPreferences();
 
-        setContentView(R.layout.activity_splash);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if (playSplashSound){
-            // If the user likes Nic Cage, play it!
-            mediaPlayer = MediaPlayer.create(SplashScreen.this, R.raw.okay_lets_ride);
-            splashInterval = mediaPlayer.getDuration();
-            mediaPlayer.start();
-        } else {
-            // Default to 3s
-            splashInterval = 3000;
+            setContentView(R.layout.activity_splash);
+
+            if (playSplashSound) {
+                // If the user likes Nic Cage, play it!
+                mediaPlayer = MediaPlayer.create(SplashScreen.this, R.raw.okay_lets_ride);
+                splashInterval = mediaPlayer.getDuration();
+                mediaPlayer.start();
+            } else {
+                // Default to 2s
+                splashInterval = 2000;
+            }
+
+            mHandler.postDelayed(mRunnable, splashInterval);
         }
 
-        mHandler.postDelayed(mRunnable,splashInterval);
+    private void getUserPreferences(){
+        playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);
     }
 
     private Runnable mRunnable = new Runnable() {
@@ -79,7 +86,6 @@ public class SplashScreen extends Activity {
             // Release the media player
             if (playSplashSound) {
                 mediaPlayer.release();
-                mediaPlayer = null;
             }
         }
     };
