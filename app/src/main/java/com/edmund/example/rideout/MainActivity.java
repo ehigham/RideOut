@@ -50,7 +50,7 @@ public class MainActivity extends ActionBarActivity {
      */
     protected static Boolean mRequestingLocationUpdates;
 
-    protected static LocationManager mLocationManager;
+    protected static Intent LocationServicesIntent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,11 +64,12 @@ public class MainActivity extends ActionBarActivity {
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
 
-        mRequestingLocationUpdates = false;
+        //mRequestingLocationUpdates = false;
+        LocationServicesIntent = new Intent(this, LocationService.class);
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
-        mLocationManager = new LocationManager(this);
+        //mLocationManager = new LocationManager(this);
     }
 
     /**
@@ -80,17 +81,19 @@ public class MainActivity extends ActionBarActivity {
         boolean on = ((ToggleButton) view).isChecked();
 
         if (on) { // Enable Location Updates
+            startService(LocationServicesIntent);
 
-            if (!mRequestingLocationUpdates){ // If updates are already requested, do nothing.
+            /*if (!mRequestingLocationUpdates){ // If updates are already requested, do nothing.
                 mRequestingLocationUpdates = true;
                 mLocationManager.startLocationUpdates();
-            }
+            }*/
 
         } else { // Disable Location Updates
-            if (mRequestingLocationUpdates){ // If updates are not requested, do nothing.
+            stopService(LocationServicesIntent);
+           /* if (mRequestingLocationUpdates){ // If updates are not requested, do nothing.
                 mRequestingLocationUpdates = false;
                 mLocationManager.stopLocationUpdates();
-            }
+            }*/
         }
     }
 
@@ -98,17 +101,17 @@ public class MainActivity extends ActionBarActivity {
      * Updates the latitude, the longitude, and the last location time in the UI.
      */
     protected static void updateUI() {
-        if (mLocationManager.mCurrentLocation != null) {
+/*        if (mLocationManager.mCurrentLocation != null) {
             mLatitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLongitude()));
             mLastUpdateTimeTextView.setText(mLocationManager.mLastUpdateTime);
-        }
+        }*/
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mLocationManager.connect();
+        //mLocationManager.connect();
     }
 
     @Override
@@ -117,29 +120,29 @@ public class MainActivity extends ActionBarActivity {
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
-        if (mRequestingLocationUpdates) mLocationManager.resumeLocationServices();
+        //if (mRequestingLocationUpdates) mLocationManager.resumeLocationServices();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        mLocationManager.pauseLocationServices();
+        //mLocationManager.pauseLocationServices();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mLocationManager.disconnect();
-    }
+    //        stopService(LocationServicesIntent);
+        }
 
     /**
      * Stores activity data in the Bundle.
      */
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
+      /*  savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
         savedInstanceState.putParcelable(LOCATION_KEY, mLocationManager.mCurrentLocation);
-        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY,mLocationManager.mLastUpdateTime);
+        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY,mLocationManager.mLastUpdateTime);*/
         super.onSaveInstanceState(savedInstanceState);
     }
 

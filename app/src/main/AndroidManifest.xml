@@ -14,7 +14,10 @@ limitations under the License.
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.edmund.example.rideout" >
 
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -53,6 +56,14 @@ limitations under the License.
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.edmund.example.rideout.MainActivity" />
         </activity>
+
+        <!--    Location Service    -->
+        <service
+            android:name=".LocationService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
+
     </application>
 
 </manifest>

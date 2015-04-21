@@ -61,16 +61,16 @@ limitations under the License.
         </PreferenceScreen>
     </PreferenceCategory>
 
-    <PreferenceCategory
+<!--    <PreferenceCategory
         android:title="Factory Reset" >
-<!--       <com.edmund.example.rideout.SettingsActivity.CustomDialogPreference
+        <com.edmund.example.rideout.SettingsActivity.CustomDialogPreference
             android:key="pref_key_factory_reset"
-           android:title="@string/pref_reset_data"
+            android:title="@string/pref_reset_data"
             android:summary="Reset all data and settings"
             android:dialogMessage="@string/pref_reset_dialog"
             android:positiveButtonText="Confirm Factory Reset"
-            android:negativeButtonText="Cancel" />-->
-    </PreferenceCategory>
+            android:negativeButtonText="Cancel" />
+    </PreferenceCategory>-->
 
 
 </PreferenceScreen>
