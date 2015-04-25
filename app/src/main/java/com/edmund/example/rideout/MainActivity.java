@@ -32,9 +32,9 @@ public class MainActivity extends ActionBarActivity {
     protected static final String TAG = "RideOut";
 
     // UI Widgets.
-    protected ToggleButton mLocationsToggle;
+    protected ToggleButton mDataAcquisitionToggle;
 
-    protected static Intent LocationServicesIntent;
+    protected static Intent dataAcquisitionService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,13 +43,14 @@ public class MainActivity extends ActionBarActivity {
         getActionBar();
 
         // Locate the UI widgets.
-        mLocationsToggle = (ToggleButton) findViewById(R.id.togglebutton);
+        mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);
 
         //mRequestingLocationUpdates = false;
-        LocationServicesIntent = new Intent(this, DataAcquisitionService.class);
+        dataAcquisitionService = new Intent(MainActivity.this, DataAcquisitionService.class);
+        dataAcquisitionService.setFlags(Intent.FLAG_FROM_BACKGROUND);
 
         // Ensure Toggle button is off
-        mLocationsToggle.setChecked(false);
+        mDataAcquisitionToggle.setChecked(false);
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
@@ -65,7 +66,7 @@ public class MainActivity extends ActionBarActivity {
         boolean on = ((ToggleButton) view).isChecked();
 
         if (on) { // Enable Location Updates
-            startService(LocationServicesIntent);
+            startService(dataAcquisitionService);
 
             /*if (!mRequestingLocationUpdates){ // If updates are already requested, do nothing.
                 mRequestingLocationUpdates = true;
@@ -73,23 +74,12 @@ public class MainActivity extends ActionBarActivity {
             }*/
 
         } else { // Disable Location Updates
-            stopService(LocationServicesIntent);
+            stopService(dataAcquisitionService);
            /* if (mRequestingLocationUpdates){ // If updates are not requested, do nothing.
                 mRequestingLocationUpdates = false;
                 mLocationManager.stopLocationUpdates();
             }*/
         }
-    }
-
-    /**
-     * Updates the latitude, the longitude, and the last location time in the UI.
-     */
-    protected static void updateUI() {
-/*        if (mLocationManager.mCurrentLocation != null) {
-            mLatitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.valueOf(mLocationManager.mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(mLocationManager.mLastUpdateTime);
-        }*/
     }
 
     @Override
@@ -117,18 +107,13 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-    //        stopService(LocationServicesIntent);
-        // Ensure Toggle button is off
-        mLocationsToggle.setChecked(false);
-        }
+    }
 
     /**
      * Stores activity data in the Bundle.
      */
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-      /*  savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
-        savedInstanceState.putParcelable(LOCATION_KEY, mLocationManager.mCurrentLocation);
-        savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY,mLocationManager.mLastUpdateTime);*/
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -154,8 +139,10 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public boolean onPlaybackClicked(View view){
+    public boolean onPlaybackClicked(){
         Intent playbackActivity = new Intent(getApplicationContext(), PlaybackActivity.class);
+        // Check to see if the DataAcquisitionService is running and turn off if true.
+        if (startService(dataAcquisitionService) != null) stopService(dataAcquisitionService);
         startActivity(playbackActivity);
         return true;
     }

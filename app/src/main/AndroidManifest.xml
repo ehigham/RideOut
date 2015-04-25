@@ -57,12 +57,7 @@ limitations under the License.
                 android:value="com.edmund.example.rideout.MainActivity" />
         </activity>
 
-        <!-- Location Service -->
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
+        <!-- Data Acquisition Service -->
         <service
             android:name=".DataAcquisitionService"
             android:enabled="true"

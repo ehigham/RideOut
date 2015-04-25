@@ -137,7 +137,7 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         }
     }
 
-    public static boolean isTableEmpty(SQLiteDatabase db){
+    public boolean isTableEmpty(SQLiteDatabase db){
         boolean flag = false;
 
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + RideEntry.TABLE_NAME, null);
