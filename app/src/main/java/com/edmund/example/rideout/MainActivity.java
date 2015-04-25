@@ -16,11 +16,9 @@
 
 package com.edmund.example.rideout;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,22 +31,8 @@ public class MainActivity extends ActionBarActivity {
 
     protected static final String TAG = "RideOut";
 
-    // Keys for storing activity state in the Bundle.
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-    protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
-
     // UI Widgets.
     protected ToggleButton mLocationsToggle;
-    protected static TextView mLastUpdateTimeTextView;
-    protected static TextView mLatitudeTextView;
-    protected static TextView mLongitudeTextView;
-
-    /**
-     * Tracks the status of the location updates request. Value changes when the user presses the
-     * Start Updates and Stop Updates buttons.
-     */
-    protected static Boolean mRequestingLocationUpdates;
 
     protected static Intent LocationServicesIntent;
 
@@ -60,12 +44,12 @@ public class MainActivity extends ActionBarActivity {
 
         // Locate the UI widgets.
         mLocationsToggle = (ToggleButton) findViewById(R.id.togglebutton);
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-        mLastUpdateTimeTextView = (TextView) findViewById(R.id.last_update_time_text);
 
         //mRequestingLocationUpdates = false;
-        LocationServicesIntent = new Intent(this, LocationService.class);
+        LocationServicesIntent = new Intent(this, DataAcquisitionService.class);
+
+        // Ensure Toggle button is off
+        mLocationsToggle.setChecked(false);
 
         // Kick off the process of building a GoogleApiClient and requesting the LocationServices
         // API.
@@ -134,6 +118,8 @@ public class MainActivity extends ActionBarActivity {
     protected void onStop() {
         super.onStop();
     //        stopService(LocationServicesIntent);
+        // Ensure Toggle button is off
+        mLocationsToggle.setChecked(false);
         }
 
     /**
@@ -166,6 +152,12 @@ public class MainActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public boolean onPlaybackClicked(View view){
+        Intent playbackActivity = new Intent(getApplicationContext(), PlaybackActivity.class);
+        startActivity(playbackActivity);
+        return true;
     }
 
 }

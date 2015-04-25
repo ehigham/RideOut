@@ -60,16 +60,17 @@ public class SplashScreen extends Activity {
                 splashInterval = mediaPlayer.getDuration();
                 mediaPlayer.start();
             } else {
-                // Default to 2s
-                splashInterval = 2000;
+                // Default to 1s
+                splashInterval = 1000;
             }
 
             mHandler.postDelayed(mRunnable, splashInterval);
         }
 
     private void getUserPreferences(){
-        playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);
+        /*playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);*/
+        playSplashSound = false;
     }
 
     private Runnable mRunnable = new Runnable() {

@@ -21,9 +21,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
@@ -36,6 +34,8 @@ import com.google.android.gms.location.LocationServices;
 
 public class LocationService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
+    public LocationService () {}
 
     private static final String TAG = "LocationService";
 
@@ -54,28 +54,31 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     protected LocationRequest mLocationRequest;
 
      /** Represents a geographical location.*/
-    protected Location mCurrentLocation;
+    protected static Location mCurrentLocation;
 
     protected static Boolean mRequestingLocationUpdates = true;
 /*            SettingsActivity.mSharedPreferences
                     .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);*/
 
-    private Thread LocationThread;
+
     private Handler mHandler = new Handler();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
+        Thread LocationThread;
 
         Log.i(TAG, "Received start id " + startId + ": " + intent);
         LocationThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
+                synchronized (this) {
                     try {
                         mGoogleApiClient.connect();
-                    } catch (Exception ex){
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
+                }
             }
         });
 
@@ -103,6 +106,9 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onCreate(){
+        //mRequestingLocationUpdates = SettingsActivity.mSharedPreferences
+         //           .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);
+
         buildGoogleApiClient();
     }
 
@@ -117,7 +123,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
      * Builds a GoogleApiClient. Uses the {@code #addApi} method to request the
      * LocationServices API.
      */
-    protected void buildGoogleApiClient() {
+    protected synchronized void buildGoogleApiClient() {
         Log.i(TAG, "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -189,6 +195,7 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         Log.d(TAG,"Location Updated @: " + mCurrentLocation.getTime());
+        DataAcquisitionService.insertData();
     }
 
     /**
@@ -213,19 +220,6 @@ public class LocationService extends Service implements GoogleApiClient.Connecti
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
-
-/*    public void resumeLocationServices() {
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
-    }
-
-    protected void pauseLocationServices() {
-        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
-    }*/
 
     @Override
     public void onConnectionSuspended(int cause) {

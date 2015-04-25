@@ -21,63 +21,22 @@
         android:id="@+id/togglebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="Location On"
-        android:textOff="Location Off"
-        android:onClick="onToggleClicked"/>
+        android:textOn="Stop Ride"
+        android:textOff="Start Ride"
+        android:onClick="onToggleClicked"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="68dp" />
 
-    <TextView
-        android:id="@+id/latitude_label"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/togglebutton"
-        android:layout_marginTop="@dimen/ui_group_top_margin"
-        android:text="@string/latitude_label"
-        android:textSize="@dimen/default_text_size" />
-
-    <TextView
-        android:id="@+id/latitude_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/latitude_label"
-        android:layout_marginLeft="@dimen/small_margin_left"
-        android:layout_toRightOf="@+id/latitude_label"
-        android:textSize="@dimen/default_text_size" />
-
-    <TextView
-        android:id="@+id/longitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/latitude_label"
-        android:text="@string/longitude_label"
-        android:textSize="@dimen/default_text_size" />
-
-    <TextView
-        android:id="@+id/longitude_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/longitude_label"
-        android:layout_marginLeft="@dimen/small_margin_left"
-        android:layout_toRightOf="@+id/longitude_label"
-        android:textSize="@dimen/default_text_size" />
-
-    <TextView
-        android:id="@+id/last_update_time_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/longitude_label"
-        android:text="@string/last_update_time_label"
-        android:textSize="@dimen/default_text_size" />
-
-    <TextView
-        android:id="@+id/last_update_time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/last_update_time_label"
-        android:layout_marginLeft="@dimen/small_margin_left"
-        android:layout_toRightOf="@+id/last_update_time_label"
-        android:textSize="@dimen/default_text_size" />
+        android:id="@+id/imageButton"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/action_launch_playback"
+        android:src="@mipmap/ic_telemetry_launcher"
+        android:background="#fffbf9ff"
+        android:onClick="onPlaybackClicked"/>
 
 </RelativeLayout>

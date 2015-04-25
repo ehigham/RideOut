@@ -57,13 +57,28 @@ limitations under the License.
                 android:value="com.edmund.example.rideout.MainActivity" />
         </activity>
 
-        <!--    Location Service    -->
+        <!-- Location Service -->
         <service
             android:name=".LocationService"
             android:enabled="true"
             android:exported="false" >
         </service>
+        <service
+            android:name=".DataAcquisitionService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
 
+        <activity
+            android:name=".PlaybackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_playback"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/FullscreenTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.edmund.example.rideout.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
