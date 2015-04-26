@@ -57,6 +57,14 @@ public class SplashScreen extends Activity {
             if (playSplashSound) {
                 // If the user likes Nic Cage, play it!
                 mediaPlayer = MediaPlayer.create(SplashScreen.this, R.raw.okay_lets_ride);
+                // Stop the media player when it finishes.
+                mediaPlayer.setOnCompletionListener( new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        mp.stop();
+                    }
+                });
+
                 splashInterval = mediaPlayer.getDuration();
                 mediaPlayer.start();
             } else {
@@ -70,7 +78,7 @@ public class SplashScreen extends Activity {
     private void getUserPreferences(){
         /*playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);*/
-        playSplashSound = false;
+        playSplashSound = true;
     }
 
     private Runnable mRunnable = new Runnable() {

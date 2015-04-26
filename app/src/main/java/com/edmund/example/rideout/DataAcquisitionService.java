@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.*;
+import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,13 +20,16 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 public class DataAcquisitionService extends Service implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, LocationListener, Handler.Callback {
 
     public DataAcquisitionService() {
     }
 
     /* Log TAG */
     private static final String TAG = "DataAcquisitionService";
+
+    protected static final String ACTION_START_ACQUISITION = "start";
+    protected static final String ACTION_STOP_ACQUISITION = "stop";
 
     /* Booleans for Location services and hardware sensors. Configurable in settings */
     private static Boolean mRequestingHardwareSensors = false;
@@ -38,12 +42,6 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     /* Database insert variables */
     private static SQLiteDatabase db;
     private static int rideID;
-    private static String timestamp;
-    private static double latitude;
-    private static double longitude;
-    private static double altitude;
-    private static double speed;
-    private static double bearing;
     private static double[] acceleration = new double[3]; // acceleration in x(0), y(1), z(2);
     private static double leanangle;
 
@@ -71,9 +69,11 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     /* Represents a geographical location.*/
     protected static Location mCurrentLocation;
 
+    /** Background Service Variables */
+    private Looper _looper;
+    private Handler _handler;
 
-    private Handler mHandler = new Handler();
-    private Thread acquisitionThread;
+    private static final String HANDLER_THREAD_NAME = "dataAcquisition";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -82,74 +82,93 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
     @Override
     public void onCreate(){
+        super.onCreate();
         // TODO: Get user preferences (eg Location/Hardware Sensors)
 
-        // Build the GoogleAPIClient
-        if (mRequestingLocationUpdates) buildGoogleApiClient();
+        // Initialise Handler, HandlerThread and Looper
+        HandlerThread thread = new HandlerThread(HANDLER_THREAD_NAME);
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+        _looper = thread.getLooper();
+        _handler = new Handler(_looper, this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-        acquisitionThread = new Thread(new Runnable() {
 
-            @Override
-            public void run() {
-                synchronized (this) {
-                    try {
-                        // Connect the GoogleAPIClient
-                        if (mRequestingLocationUpdates) mGoogleApiClient.connect();
+        if ( mRequestingLocationUpdates ) buildGoogleApiClient();
 
-                        mDbHelper = new RideDataDbHelper(DataAcquisitionService.this);
-                        // Initialise database
-                        db = mDbHelper.getReadableDatabase();
-                        // Get the RideID for this ride
-                        rideID = getNewRideId();
-                        // Close the readable database to avoid memory leaks
-                        db.close();
-                        // Get a writable database for data insertion
-                        db = mDbHelper.getWritableDatabase();
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        acquisitionThread.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        acquisitionThread.start();
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(DataAcquisitionService.this, "Starting Data Acquisition",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        Log.i(TAG, "Starting Data Acquisition Service with RideID: " + rideID);
-
+       _handler.sendMessage(_handler.obtainMessage(0,intent));
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
         return START_STICKY;
     }
 
     @Override
-    public void onDestroy(){
-        if (mRequestingLocationUpdates) {
-            stopLocationUpdates();
-            mGoogleApiClient.disconnect();
+    public boolean handleMessage(Message msg){
+        Intent intent = (Intent) msg.obj;
+
+        String action = intent.getAction();
+        Log.i(TAG,"Received action: " + action);
+
+        if ( action.equals(ACTION_START_ACQUISITION) ) {
+
+            try {
+                // Connect the GoogleAPIClient
+                if (mRequestingLocationUpdates) {
+
+                    mGoogleApiClient.connect();
+                }
+
+                mDbHelper = new RideDataDbHelper(DataAcquisitionService.this);
+                // Initialise database
+                db = mDbHelper.getReadableDatabase();
+                // Get the RideID for this ride
+                rideID = getNewRideId();
+                // Close the readable database to avoid memory leaks
+                db.close();
+                // Get a writable database for data insertion
+                db = mDbHelper.getWritableDatabase();
+
+                Log.i(TAG, "Hello from " + Thread.currentThread().getName());
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            _handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(DataAcquisitionService.this, "Starting Data Acquisition",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Log.i(TAG, "Starting Data Acquisition Service with RideID: " + rideID);
+
+        }else if (action.equals(ACTION_STOP_ACQUISITION) ){
+            Log.i(TAG, "Disabling Data Acquisition Service");
+            stopSelf();
         }
 
-        if(acquisitionThread.isAlive()) {
-            Log.d(TAG,"Killing thread");
-            try{
-                acquisitionThread.join();
-            } catch (InterruptedException ex) {
-                Log.w(TAG,"Thread " + acquisitionThread.getName() + " was interrupted.");
+        return true;
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        if(mGoogleApiClient != null){
+            if ( mGoogleApiClient.isConnected() ) {
+                stopLocationUpdates();
+                mGoogleApiClient.disconnect();
             }
+        }
+
+        if ( _looper != null ){
+            _looper.quit();
         }
 
         Toast.makeText(this,"Disabling Data Acquisition",Toast.LENGTH_SHORT).show();
@@ -311,31 +330,25 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
-        Log.d(TAG,"Location Updated @: " + mCurrentLocation.getTime());
+        Log.d(TAG,"Location Updated @: " + mCurrentLocation.getTime() +
+        " by thread " + Thread.currentThread().getName());
         insertData();
-        Toast.makeText(this,"Location Updated",Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Requests location updates from the FusedLocationApi.
      */
     protected void startLocationUpdates() {
-        // The final argument to {@code requestLocationUpdates()} is a LocationListener
-        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        stopLocationUpdates();
+
         LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+                mGoogleApiClient, mLocationRequest, this, _looper);
     }
 
     /**
      * Removes location updates from the FusedLocationApi.
      */
     protected void stopLocationUpdates() {
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
-
-        // The final argument to {@code requestLocationUpdates()} is a LocationListener
-        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 

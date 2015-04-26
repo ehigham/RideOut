@@ -18,6 +18,7 @@ package com.edmund.example.rideout;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,8 +35,6 @@ public class MainActivity extends ActionBarActivity {
     // UI Widgets.
     protected ToggleButton mDataAcquisitionToggle;
 
-    protected static Intent dataAcquisitionService;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,16 +44,6 @@ public class MainActivity extends ActionBarActivity {
         // Locate the UI widgets.
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);
 
-        //mRequestingLocationUpdates = false;
-        dataAcquisitionService = new Intent(MainActivity.this, DataAcquisitionService.class);
-        dataAcquisitionService.setFlags(Intent.FLAG_FROM_BACKGROUND);
-
-        // Ensure Toggle button is off
-        mDataAcquisitionToggle.setChecked(false);
-
-        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
-        // API.
-        //mLocationManager = new LocationManager(this);
     }
 
     /**
@@ -66,42 +55,31 @@ public class MainActivity extends ActionBarActivity {
         boolean on = ((ToggleButton) view).isChecked();
 
         if (on) { // Enable Location Updates
-            startService(dataAcquisitionService);
-
-            /*if (!mRequestingLocationUpdates){ // If updates are already requested, do nothing.
-                mRequestingLocationUpdates = true;
-                mLocationManager.startLocationUpdates();
-            }*/
+            Intent intent = new Intent(this,DataAcquisitionService.class);
+            intent.setAction(DataAcquisitionService.ACTION_START_ACQUISITION);
+            startService(intent);
 
         } else { // Disable Location Updates
-            stopService(dataAcquisitionService);
-           /* if (mRequestingLocationUpdates){ // If updates are not requested, do nothing.
-                mRequestingLocationUpdates = false;
-                mLocationManager.stopLocationUpdates();
-            }*/
-        }
+            Intent intent = new Intent(this,DataAcquisitionService.class);
+            intent.setAction(DataAcquisitionService.ACTION_STOP_ACQUISITION);
+            startService(intent);
+
+            }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //mLocationManager.connect();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Within {@code onPause()}, we pause location updates, but leave the
-        // connection to GoogleApiClient intact.  Here, we resume receiving
-        // location updates if the user has requested them.
-        //if (mRequestingLocationUpdates) mLocationManager.resumeLocationServices();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // Stop location updates to save battery, but don't disconnect the GoogleApiClient object.
-        //mLocationManager.pauseLocationServices();
     }
 
     @Override
@@ -139,10 +117,14 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public boolean onPlaybackClicked(){
+    public boolean onPlaybackClicked(View view){
         Intent playbackActivity = new Intent(getApplicationContext(), PlaybackActivity.class);
         // Check to see if the DataAcquisitionService is running and turn off if true.
-        if (startService(dataAcquisitionService) != null) stopService(dataAcquisitionService);
+        // TODO: Disable DataAcquisitionService if running (SORT OUT THREADS!!!)
+        Intent intent = new Intent(this,DataAcquisitionService.class);
+        intent.setAction(DataAcquisitionService.ACTION_STOP_ACQUISITION);
+        startService(intent);
+
         startActivity(playbackActivity);
         return true;
     }

@@ -61,7 +61,12 @@ limitations under the License.
         <service
             android:name=".DataAcquisitionService"
             android:enabled="true"
-            android:exported="true" >
+            android:exported="false">
+                <intent-filter>
+                    <!-- Start/Stop Service -->
+                    <action android:name="start" />
+                    <action android:name="stop" />
+                </intent-filter>
         </service>
 
         <activity
