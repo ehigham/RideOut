@@ -16,8 +16,11 @@
 
 package com.edmund.example.rideout;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -34,6 +37,7 @@ public class MainActivity extends ActionBarActivity {
 
     // UI Widgets.
     protected ToggleButton mDataAcquisitionToggle;
+    private static final String KEY_ACQUISITION_TOGGLE = "key_acquisition_toggle";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,9 @@ public class MainActivity extends ActionBarActivity {
 
         // Locate the UI widgets.
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);
+        mDataAcquisitionToggle.setChecked(getAcquisitionToggleState(KEY_ACQUISITION_TOGGLE, this));
+
+        //TODO: Ensure that DataAcquisitionService is disabled.
 
     }
 
@@ -85,6 +92,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        setAcquisitionToggleState(KEY_ACQUISITION_TOGGLE, mDataAcquisitionToggle.isChecked(), this);
     }
 
     /**
@@ -119,14 +127,28 @@ public class MainActivity extends ActionBarActivity {
 
     public boolean onPlaybackClicked(View view){
         Intent playbackActivity = new Intent(getApplicationContext(), PlaybackActivity.class);
-        // Check to see if the DataAcquisitionService is running and turn off if true.
-        // TODO: Disable DataAcquisitionService if running (SORT OUT THREADS!!!)
-        Intent intent = new Intent(this,DataAcquisitionService.class);
-        intent.setAction(DataAcquisitionService.ACTION_STOP_ACQUISITION);
-        startService(intent);
+
+        // Disable DataAcquisitionService if is toggled on
+        if ( mDataAcquisitionToggle.isChecked() ) {
+            Intent intent = new Intent(this, DataAcquisitionService.class);
+            intent.setAction(DataAcquisitionService.ACTION_STOP_ACQUISITION);
+            startService(intent);
+        }
 
         startActivity(playbackActivity);
         return true;
+    }
+
+    public boolean getAcquisitionToggleState(String key, Context context){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getBoolean(key, false);
+    }
+
+    public void setAcquisitionToggleState(String key, Boolean value, Context context){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
     }
 
 }

@@ -104,7 +104,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         Intent intent = (Intent) msg.obj;
 
         String action = intent.getAction();
-        Log.d(TAG,"Received action: " + action);
+        Log.d(TAG,"Thread " + Thread.currentThread().getName() + " received action: " + action);
 
         if ( action.equals(ACTION_START_ACQUISITION) ) {
 
@@ -130,8 +130,6 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 db.close();
                 // Get a writable database for data insertion
                 db = mDbHelper.getWritableDatabase();
-
-                Log.d(TAG, "Hello from " + Thread.currentThread().getName());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -181,8 +179,10 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         }
 
         Toast.makeText(this,"Disabling Data Acquisition",Toast.LENGTH_SHORT).show();
-        mDbHelper.exportDB(db);
-        db.close();
+        if ( db != null ) {
+            mDbHelper.exportDB(db);
+            db.close();
+        }
     }
 
     protected static void insertData(){
@@ -254,6 +254,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 if (cursor != null) {
                     cursor.moveToFirst();
                     rideID = cursor.getInt(cursor.getColumnIndexOrThrow(RideEntry.COLUMN_NAME_RIDE_ID));
+                    cursor.close();
                 }
             } catch (IllegalArgumentException ex) {
                 Log.e(TAG, "Could not retrieve previous RideID from database");

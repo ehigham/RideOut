@@ -146,9 +146,6 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
              if ( cursor.getInt(0) == 0 ) { // If table is empty, a "0" is placed in row 1, column 0
                  flag = true;
                  Log.i(TAG,"Found zero entry in row 1: Table " + RideEntry.TABLE_NAME + " is empty");
-
-             } else{
-                 Log.i(TAG,"Found " + cursor.getCount() + " entries in table " + RideEntry.TABLE_NAME);
              }
             cursor.close();
         }

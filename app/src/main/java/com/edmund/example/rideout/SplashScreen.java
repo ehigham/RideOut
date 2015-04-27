@@ -61,7 +61,7 @@ public class SplashScreen extends Activity {
                 mediaPlayer.setOnCompletionListener( new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mp) {
-                        mp.stop();
+                        mp.release();
                     }
                 });
 
@@ -94,7 +94,7 @@ public class SplashScreen extends Activity {
         private void finish() {
             // Release the media player
             if (playSplashSound) {
-                mediaPlayer.release();
+                mediaPlayer.stop();
             }
         }
     };
