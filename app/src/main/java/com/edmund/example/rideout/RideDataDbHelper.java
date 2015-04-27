@@ -156,7 +156,7 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         return flag;
     }
 
-    public void exportDB(SQLiteDatabase db, Context context){
+    public void exportDB(SQLiteDatabase db){
         FileChannel source=null;
         FileChannel destination=null;
         String currentDBPath = db.getPath();

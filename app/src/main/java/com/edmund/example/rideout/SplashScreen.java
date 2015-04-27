@@ -76,9 +76,9 @@ public class SplashScreen extends Activity {
         }
 
     private void getUserPreferences(){
-        /*playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);*/
-        playSplashSound = true;
+        playSplashSound = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(SettingsActivity.PREF_KEY_SPLASH_SOUND,true);
+        //playSplashSound = true;
     }
 
     private Runnable mRunnable = new Runnable() {

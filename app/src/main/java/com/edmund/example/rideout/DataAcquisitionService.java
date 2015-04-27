@@ -85,20 +85,13 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         super.onCreate();
         // TODO: Get user preferences (eg Location/Hardware Sensors)
 
-        // Initialise Handler, HandlerThread and Looper
-        HandlerThread thread = new HandlerThread(HANDLER_THREAD_NAME);
-        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-        _looper = thread.getLooper();
-        _handler = new Handler(_looper, this);
+        _handler = getNewHandler();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
 
         Log.i(TAG, "Received start id " + startId + ": " + intent);
-
-        if ( mRequestingLocationUpdates ) buildGoogleApiClient();
 
        _handler.sendMessage(_handler.obtainMessage(0,intent));
         // We want this service to continue running until it is explicitly
@@ -111,17 +104,23 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         Intent intent = (Intent) msg.obj;
 
         String action = intent.getAction();
-        Log.i(TAG,"Received action: " + action);
+        Log.d(TAG,"Received action: " + action);
 
         if ( action.equals(ACTION_START_ACQUISITION) ) {
 
+            /* Since the background thread must been "restarted", must rebuild the GoogleApiClient:
+            -> The GoogleApiClient.builder requires a _handler
+            -> The FusedLocationApi location requester requires a _looper
+            -> On restart, both _looper and _handler belong to a dead thread.
+            */
+
+            // Build & Connect the GoogleAPIClient
+            if (mRequestingLocationUpdates) {
+                buildGoogleApiClient();
+                mGoogleApiClient.connect();
+            }
+
             try {
-                // Connect the GoogleAPIClient
-                if (mRequestingLocationUpdates) {
-
-                    mGoogleApiClient.connect();
-                }
-
                 mDbHelper = new RideDataDbHelper(DataAcquisitionService.this);
                 // Initialise database
                 db = mDbHelper.getReadableDatabase();
@@ -132,19 +131,19 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 // Get a writable database for data insertion
                 db = mDbHelper.getWritableDatabase();
 
-                Log.i(TAG, "Hello from " + Thread.currentThread().getName());
+                Log.d(TAG, "Hello from " + Thread.currentThread().getName());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-            _handler.post(new Runnable() {
+           /* _handler.post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(DataAcquisitionService.this, "Starting Data Acquisition",
                             Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
 
             Log.i(TAG, "Starting Data Acquisition Service with RideID: " + rideID);
 
@@ -154,6 +153,16 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         }
 
         return true;
+    }
+
+    private Handler getNewHandler(){
+
+        HandlerThread thread = new HandlerThread(HANDLER_THREAD_NAME);
+        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+        _looper = thread.getLooper();
+
+        return new Handler(_looper, this);
     }
 
     @Override
@@ -172,7 +181,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         }
 
         Toast.makeText(this,"Disabling Data Acquisition",Toast.LENGTH_SHORT).show();
-        mDbHelper.exportDB(db, this);
+        mDbHelper.exportDB(db);
         db.close();
     }
 
@@ -200,7 +209,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         long id;
         id = db.insert(RideEntry.TABLE_NAME, null, values);
 
-        Log.i(TAG,"inserted row number = " + id);
+        Log.d(TAG,"inserted row number = " + id);
 
         // Check if insert was successful
         if (id == -1){
@@ -260,10 +269,13 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
      * LocationServices API.
      */
     protected synchronized void buildGoogleApiClient() {
-        Log.i(TAG, "Building GoogleApiClient");
+
+        Log.d(TAG,"Building GoogleApiClient on thread " + Thread.currentThread().getName());
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
+                .setHandler(_handler)
                 .addApi(LocationServices.API)
                 .build();
         createLocationRequest();
@@ -300,7 +312,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
      */
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(TAG, "Connected to GoogleApiClient");
+        Log.i(TAG, "Connected GoogleApiClient");
 
         // If the initial location was never previously requested, we use
         // FusedLocationApi.getLastLocation() to get it. If it was previously requested, we store
