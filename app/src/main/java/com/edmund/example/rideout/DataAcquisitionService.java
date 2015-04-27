@@ -135,13 +135,14 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 ex.printStackTrace();
             }
 
-           /* _handler.post(new Runnable() {
+            Handler h = new Handler(DataAcquisitionService.this.getMainLooper());
+            h.post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(DataAcquisitionService.this, "Starting Data Acquisition",
                             Toast.LENGTH_SHORT).show();
                 }
-            });*/
+            });
 
             Log.i(TAG, "Starting Data Acquisition Service with RideID: " + rideID);
 

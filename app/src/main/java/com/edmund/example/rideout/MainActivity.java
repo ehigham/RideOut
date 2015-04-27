@@ -49,8 +49,6 @@ public class MainActivity extends ActionBarActivity {
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);
         mDataAcquisitionToggle.setChecked(getAcquisitionToggleState(KEY_ACQUISITION_TOGGLE, this));
 
-        //TODO: Ensure that DataAcquisitionService is disabled.
-
     }
 
     /**
