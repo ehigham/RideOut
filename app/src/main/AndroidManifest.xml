@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.edmund.example.rideout" >
+    package="com.opentt.rideout" >
 
     <!-- Permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -51,10 +51,10 @@ limitations under the License.
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
-            android:parentActivityName="com.edmund.example.rideout.MainActivity" >
+            android:parentActivityName="com.opentt.rideout.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.edmund.example.rideout.MainActivity" />
+                android:value="com.opentt.rideout.MainActivity" />
         </activity>
 
         <!-- Data Acquisition Service -->
@@ -77,7 +77,7 @@ limitations under the License.
             android:theme="@style/FullscreenTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.edmund.example.rideout.MainActivity" />
+                android:value="com.opentt.rideout.MainActivity" />
         </activity>
     </application>
 

@@ -1,6 +1,6 @@
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
-import com.edmund.example.rideout.util.SystemUiHider;
+import com.opentt.rideout.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

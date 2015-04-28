@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
 import android.util.Log;
 

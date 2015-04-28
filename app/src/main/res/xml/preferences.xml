@@ -63,7 +63,7 @@ limitations under the License.
 
 <!--    <PreferenceCategory
         android:title="Factory Reset" >
-        <com.edmund.example.rideout.SettingsActivity.CustomDialogPreference
+        <com.opentt.rideout.SettingsActivity.CustomDialogPreference
             android:key="pref_key_factory_reset"
             android:title="@string/pref_reset_data"
             android:summary="Reset all data and settings"

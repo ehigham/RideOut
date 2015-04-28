@@ -1,4 +1,4 @@
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

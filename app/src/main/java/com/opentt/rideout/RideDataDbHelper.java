@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.nfc.Tag;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.edmund.example.rideout.RideDataContract.RideEntry;
+import com.opentt.rideout.RideDataContract.RideEntry;
 
 import java.io.File;
 import java.io.FileInputStream;

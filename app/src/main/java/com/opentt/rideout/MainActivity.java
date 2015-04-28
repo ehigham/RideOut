@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 //import android.widget.Toast;
 

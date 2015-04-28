@@ -1,4 +1,4 @@
-package com.edmund.example.rideout;
+package com.opentt.rideout;
 
 import android.app.Service;
 import android.content.ContentValues;
@@ -12,7 +12,7 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.edmund.example.rideout.RideDataContract.RideEntry;
+import com.opentt.rideout.RideDataContract.RideEntry;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
