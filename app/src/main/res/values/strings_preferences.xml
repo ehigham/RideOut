@@ -6,7 +6,8 @@
     <string name="pref_general">General</string>
 
     <!-- Strings related to Splash Settings -->
-    <string name="splash_sound">Play colourful music on start-up</string>
+    <string name="splash_sound">Jingle on start</string>
+    <string name="splash_sound_summary">Play tasteful muzak on start-up</string>
 
 
     <!-- Data Acquisition -->
@@ -28,11 +29,14 @@
     <string name="play_services_not_installed">Google Play services is not installed on this device.</string>
 
     <string name="pref_reset">Reset Settings</string>
-    <string name="pref_reset_data">Reset App</string>
-    <string name="pref_reset_data_description">Reset all settings and data in app</string>
-    <string name="pref_reset_dialog">Confirm factory reset.
-        Warning: all data and settings will be removed.
+    <string name="pref_reset_preferences">Reset app preferences</string>
+    <string name="pref_reset_preferences_summary">Reset all preferences in app</string>
+    <string name="pref_reset_data_dialog">Confirm factory reset.
+        Warning: all data will be removed.
         This cannot be undone.</string>
+
+    <string name="pref_clear_data">Clear all data</string>
+    <string name="pref_clear_data_summary">Remove all existing ride data</string>
     
     <!-- About -->
     <string name="pref_about">About</string>

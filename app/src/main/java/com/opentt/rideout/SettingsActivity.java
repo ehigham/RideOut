@@ -16,25 +16,23 @@
 
 package com.opentt.rideout;
 
-import android.content.Context;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.preference.Preference;
+import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-
-import android.util.AttributeSet;
+import android.preference.SwitchPreference;
 import android.util.Log;
-import android.view.MenuItem;
+import android.widget.Toast;
+
 
 public class SettingsActivity extends PreferenceActivity implements
-        Preference.OnPreferenceClickListener {
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = "Settings";
-    public static final String KEY_PREF_SAMPLE_FREQUENCY = "pref_sample_frequency";
     public static SharedPreferences mSharedPreferences;
 
     /**
@@ -45,7 +43,7 @@ public class SettingsActivity extends PreferenceActivity implements
     public static final String PREF_KEY_SAMPLE_FREQUENCY  = "pref_key_sample_frequency";
     public static final String PREF_KEY_ENABLE_LINEAR_ACCELEROMETERS = "pref_key_enable_linear_accelerometers";
     public static final String PREF_KEY_ENABLE_GYROS  = "pref_key_enable_gyros";
-    public static final String PREF_KEY_FACTORY_RESET  = "pref_key_factory_reset";
+    public static final String PREF_KEY_RESET_PREFERENCES  = "pref_key_reset_preferences";
     public static final String PREF_KEY_LEGAL_INFO  = "pref_key_legal_info";
 
 
@@ -59,16 +57,51 @@ public class SettingsActivity extends PreferenceActivity implements
                 .commit();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
 
     }
 
-    public boolean onPreferenceClick(Preference preference) {
-        switch ( preference.getKey() ) {
-            case PREF_KEY_LEGAL_INFO:
-                startActivity(preference.getIntent());
-                return true;
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        if ( key.equals(PREF_KEY_RESET_PREFERENCES) ){
+            final Preference pref = findPreference(PREF_KEY_RESET_PREFERENCES);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+            builder.setTitle(R.string.pref_reset_preferences);
+            builder.setMessage(R.string.pref_reset_data_dialog);
+            builder.setCancelable(true);
+
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Log.i(TAG, "Resetting Things");
+                    //TODO: Reset settings
+                    Toast.makeText(getApplicationContext(),"Preferences Reset!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which){
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
         }
-        return false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     public static class SettingsFragment extends PreferenceFragment {
@@ -81,28 +114,5 @@ public class SettingsActivity extends PreferenceActivity implements
             addPreferencesFromResource(R.xml.preferences);
 
         }
-    }
-
-
-    /**
-     * The mDialogPreference will display a dialog, and will persist the
-     * <code>true</code> when pressing the positive button and <code>false</code>
-     * otherwise. It will persist to the android:key specified in xml-preference.
-     */
-    public class CustomDialogPreference extends DialogPreference {
-
-        public CustomDialogPreference(Context context, AttributeSet attributeSet) {
-            super(context, attributeSet);
-        }
-
-        @Override
-        protected void onDialogClosed(boolean positiveResult) {
-            super.onDialogClosed(positiveResult);
-            persistBoolean(positiveResult);
-        }
-    }
-
-    public void onFactoryReset(){
-
     }
 }

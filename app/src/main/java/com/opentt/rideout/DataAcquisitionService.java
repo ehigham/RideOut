@@ -277,6 +277,10 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         mRequestingHardwareSensors = preferences
                 .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);
 
+        UPDATE_INTERVAL_IN_MILLISECONDS = preferences
+                .getInt(SettingsActivity.PREF_KEY_SAMPLE_FREQUENCY,5)*1000;
+
+        FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS/2;
     }
 
     /**

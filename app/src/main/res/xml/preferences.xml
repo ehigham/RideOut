@@ -20,6 +20,7 @@ limitations under the License.
     <CheckBoxPreference
         android:key="pref_key_splash_sound"
         android:title="@string/splash_sound"
+        android:summary="@string/splash_sound_summary"
         android:defaultValue="true" />
 
     </PreferenceCategory>
@@ -36,6 +37,7 @@ limitations under the License.
         <ListPreference
             android:key="pref_key_sample_frequency"
             android:title="@string/pref_sample_frequency"
+            android:summary="%s"
             android:defaultValue="@string/pref_sample_frequency_default"
             android:entries="@array/pref_sample_frequency_titles"
             android:entryValues="@array/pref_sample_frequency_values"
@@ -61,20 +63,20 @@ limitations under the License.
         </PreferenceScreen>
     </PreferenceCategory>
 
-<!--    <PreferenceCategory
+   <PreferenceCategory
         android:title="Factory Reset" >
-        <com.opentt.rideout.SettingsActivity.CustomDialogPreference
-            android:key="pref_key_factory_reset"
-            android:title="@string/pref_reset_data"
-            android:summary="Reset all data and settings"
-            android:dialogMessage="@string/pref_reset_dialog"
-            android:positiveButtonText="Confirm Factory Reset"
-            android:negativeButtonText="Cancel" />
-    </PreferenceCategory>-->
+       <Preference
+            android:key="pref_key_reset_preferences"
+            android:title="@string/pref_reset_preferences"
+            android:summary="@string/pref_reset_preferences_summary" />
+       <Preference
+           android:key="pref_key_clear_data"
+           android:title="@string/pref_clear_data"
+           android:summary="@string/pref_clear_data_summary" />
+    </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/pref_about" >
-
         <Preference
             android:title="@string/pref_legal_info"
             android:key="key_legal_info"
