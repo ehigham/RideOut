@@ -157,6 +157,8 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         String currentDBPath = db.getPath();
         String backupDBPath = "/RideDataBackup";
 
+        Log.i(TAG,"src db at path: " + currentDBPath);
+
         // Check to see if external storage is writable
         if ( isExternalStorageWritable() ) {
 
@@ -200,12 +202,58 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         }
     }
 
-    /* Checks if external storage is available for read and write */
-    private boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
+    public static void importDb(){
+        FileChannel source = null;
+        FileChannel destination = null;
+        String importPATH = "/RideDataBackup";
+        String destinationPATH = "/data/data/com.opentt.rideout/databases/RideData.db";
+
+        // Check to see if external storage is writable
+        if ( isExternalStorageWritable() ) {
+
+            File destinationDB = new File(destinationPATH);
+
+            String root = Environment.
+                    getExternalStorageDirectory().getAbsolutePath();
+
+            File importDir = new File(root + importPATH);
+            if ( importDir.exists() ) {
+
+                File importDB = new File(importDir, "backup.db");
+
+                if (importDB.exists()) {
+
+                    try {
+                        source = new FileInputStream(importDB).getChannel();
+                        destination = new FileOutputStream(destinationDB).getChannel();
+                        destination.transferFrom(source, 0, source.size());
+                        source.close();
+                        destination.close();
+                        Log.i(TAG, "Backup database imported to " + destinationDB.getPath());
+                        //Toast.makeText(this, "DB Exported!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Log.e(TAG, "Backup database does not exist");
+                }
+
+
+            } else {
+                Log.e(TAG, "Backup directory does not exist");
+            }
+
+        } else{
+            Log.e(TAG, "External Storage not readable");
         }
-        return false;
+
     }
+
+    /* Checks if external storage is available for read and write */
+    private static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
 }

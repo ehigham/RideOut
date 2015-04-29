@@ -27,7 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ToggleButton;
-//import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -42,6 +41,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getActionBar();
+        //RideDataDbHelper.importDb();
 
         // Locate the UI widgets.
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);

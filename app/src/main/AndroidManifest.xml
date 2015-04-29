@@ -15,9 +15,16 @@ limitations under the License.
     package="com.opentt.rideout" >
 
     <!-- Permissions -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -25,8 +32,8 @@ limitations under the License.
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <meta-data
-            android:name="com.google.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAjhXr4EjPZ5JfcPsZl8Zt0wP7ByIEgzRs" />
 
         <!-- Splash Screen -->
         <activity
@@ -57,24 +64,27 @@ limitations under the License.
                 android:value="com.opentt.rideout.MainActivity" />
         </activity>
 
+        <!-- Legal Info Activity -->
+        <activity
+            android:name=".LegalInfoActivity"
+            android:label="@string/title_activity_legal"  />
+
         <!-- Data Acquisition Service -->
         <service
             android:name=".DataAcquisitionService"
             android:enabled="true"
-            android:exported="false">
-                <intent-filter>
-                    <!-- Start/Stop Service -->
-                    <action android:name="start" />
-                    <action android:name="stop" />
-                </intent-filter>
+            android:exported="false" >
+            <intent-filter>
+                <!-- Start/Stop Service -->
+                <action android:name="start" />
+                <action android:name="stop" />
+            </intent-filter>
         </service>
 
         <activity
             android:name=".PlaybackActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_playback"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/FullscreenTheme" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.opentt.rideout.MainActivity" />

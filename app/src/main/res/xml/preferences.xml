@@ -36,7 +36,7 @@ limitations under the License.
         <ListPreference
             android:key="pref_key_sample_frequency"
             android:title="@string/pref_sample_frequency"
-            android:defaultValue="5"
+            android:defaultValue="@string/pref_sample_frequency_default"
             android:entries="@array/pref_sample_frequency_titles"
             android:entryValues="@array/pref_sample_frequency_values"
             android:negativeButtonText="@null"
@@ -71,6 +71,21 @@ limitations under the License.
             android:positiveButtonText="Confirm Factory Reset"
             android:negativeButtonText="Cancel" />
     </PreferenceCategory>-->
+
+    <PreferenceCategory
+        android:title="@string/pref_about" >
+
+        <Preference
+            android:title="@string/pref_legal_info"
+            android:key="key_legal_info"
+            android:summary="@string/pref_legal_info_summary" >
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.opentt.rideout"
+                android:targetClass="com.opentt.rideout.LegalInfoActivity" />
+        </Preference>
+
+    </PreferenceCategory>
 
 
 </PreferenceScreen>

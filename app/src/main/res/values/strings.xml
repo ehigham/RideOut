@@ -29,41 +29,12 @@
 
         <string name="splash_string">Remember, always ride within your abilities and the law.</string>
 
-    <!--    Strings for Settings    -->
-        <string name="title_activity_settings">Settings</string>
-
-        <!-- General settings -->
-        <string name="pref_general">General</string>
-
-        <!-- Strings related to Splash Settings -->
-        <string name="splash_sound">Play colourful music on start-up</string>
 
 
-        <!-- Data Acquisition -->
-        <string name="pref_data_acquisition">Data Acquisition</string>
-
-        <string name="pref_location_tracking">Use Location Tracking Services</string>
-
-        <!-- Strings Related to GPS and Sensor sampling -->
-        <string name="pref_sample_frequency">GPS &amp; Sensor Sampling Frequency</string>
-
-        <!--    Strings Related to Sensors  -->
-        <string name="pref_sensors">Sensors</string>
-        <string name="pref_key_sensors_description">Choose which sensors to use</string>
-        <string name="pref_linear_accelerometers">Enable Linear Accelerometers</string>
-        <string name="linear_accelerometer_description">Used to gather linear acceleration data</string>
-        <string name="pref_gyro">Enable Gyroscopes</string>
-        <string name="gyro_description">Used to measure lean angle</string>
-
-
-    <string name="pref_reset">Reset Settings</string>
-    <string name="pref_reset_data">Reset App</string>
-    <string name="pref_reset_data_description">Reset all settings and data in app</string>
-    <string name="pref_reset_dialog">Confirm factory reset.
-        Warning: all data and settings will be removed.
-        This cannot be undone.</string>
+    <string name="title_activity_legal">Legal info</string>
 
     <string name="title_activity_playback">PlaybackActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="hello_world">Hello world!</string>
 </resources>

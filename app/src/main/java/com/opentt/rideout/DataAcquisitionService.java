@@ -3,12 +3,14 @@ package com.opentt.rideout;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.location.Location;
 import android.os.*;
 import android.os.Process;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,7 +34,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     protected static final String ACTION_STOP_ACQUISITION = "stop";
 
     /* Booleans for Location services and hardware sensors. Configurable in settings */
-    private static Boolean mRequestingHardwareSensors = false;
+    private static Boolean mRequestingHardwareSensors;
 
     /** Database variables */
 
@@ -49,9 +51,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     /** Location Variables */
 
     // Use Location Services?
-    protected static Boolean mRequestingLocationUpdates = true;
-/*            SettingsActivity.mSharedPreferences
-                    .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);*/
+    protected Boolean mRequestingLocationUpdates;
 
     /* The desired interval for location updates. Inexact. Updates may be more or less frequent.*/
     public static long UPDATE_INTERVAL_IN_MILLISECONDS = 100;
@@ -107,6 +107,9 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         Log.d(TAG,"Thread " + Thread.currentThread().getName() + " received action: " + action);
 
         if ( action.equals(ACTION_START_ACQUISITION) ) {
+
+            // Check to see if user preferences have changed
+            getUserPreferences();
 
             /* Since the background thread must been "restarted", must rebuild the GoogleApiClient:
             -> The GoogleApiClient.builder requires a _handler
@@ -264,6 +267,16 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         }
         db.close();
         return ++rideID;
+    }
+
+    private void getUserPreferences(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mRequestingLocationUpdates = preferences
+                .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);
+
+        mRequestingHardwareSensors = preferences
+                .getBoolean(SettingsActivity.PREF_KEY_USE_LOCATION_SERVICES, true);
+
     }
 
     /**

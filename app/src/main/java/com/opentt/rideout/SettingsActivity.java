@@ -17,20 +17,23 @@
 package com.opentt.rideout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MenuItem;
 
 public class SettingsActivity extends PreferenceActivity implements
-                        OnSharedPreferenceChangeListener {
+        Preference.OnPreferenceClickListener {
 
+    private static final String TAG = "Settings";
     public static final String KEY_PREF_SAMPLE_FREQUENCY = "pref_sample_frequency";
     public static SharedPreferences mSharedPreferences;
 
@@ -43,6 +46,8 @@ public class SettingsActivity extends PreferenceActivity implements
     public static final String PREF_KEY_ENABLE_LINEAR_ACCELEROMETERS = "pref_key_enable_linear_accelerometers";
     public static final String PREF_KEY_ENABLE_GYROS  = "pref_key_enable_gyros";
     public static final String PREF_KEY_FACTORY_RESET  = "pref_key_factory_reset";
+    public static final String PREF_KEY_LEGAL_INFO  = "pref_key_legal_info";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,30 +59,30 @@ public class SettingsActivity extends PreferenceActivity implements
                 .commit();
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+    }
+
+    public boolean onPreferenceClick(Preference preference) {
+        switch ( preference.getKey() ) {
+            case PREF_KEY_LEGAL_INFO:
+                startActivity(preference.getIntent());
+                return true;
+        }
+        return false;
     }
 
     public static class SettingsFragment extends PreferenceFragment {
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preferences);
+
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Preference mPreference;
-        if (key.equals(KEY_PREF_SAMPLE_FREQUENCY)) {
-            mPreference = findPreference(key);
-            // Set summary to be the user-description for the selected value
-            mPreference.setSummary(sharedPreferences.getString(key, "2 seconds"));
-        } else if (key.equals(PREF_KEY_SPLASH_SOUND)){
-            mPreference = findPreference(key);
-            SplashScreen.playSplashSound = mPreference.getSharedPreferences().getBoolean(key,true);
-            Log.i("PREF", "playSplashSound changed to " + String.valueOf(SplashScreen.playSplashSound));
-        }
-    }
 
     /**
      * The mDialogPreference will display a dialog, and will persist the
