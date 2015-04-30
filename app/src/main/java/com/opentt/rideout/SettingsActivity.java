@@ -117,6 +117,9 @@ public class SettingsActivity extends PreferenceActivity implements
             alert.show();
             return true;
         }
+
+        //TODO: Restart activity if reset is confirmed
+
         return false;
     }
 
