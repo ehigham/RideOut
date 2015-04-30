@@ -1,1 +1,2 @@
 include ':app', ':slidingmenu'
+project(':slidingmenu').projectDir = new File('SlidingMenu/library')
