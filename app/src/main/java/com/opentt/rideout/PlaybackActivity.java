@@ -33,20 +33,7 @@ public class PlaybackActivity extends ActionBarActivity /*implements
                     .commit();
         }
 
-//        SupportMapFragment mapFragment =
-//                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
     }
-
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//
-//        // Hide the zoom controls as the user probably has fingers
-//        mMap.getUiSettings().setZoomControlsEnabled(false);
-//
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -69,6 +56,8 @@ public class PlaybackActivity extends ActionBarActivity /*implements
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     /**
      * A placeholder fragment containing a simple view.
