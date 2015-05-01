@@ -1,2 +1,3 @@
-include ':app', ':slidingmenu'
+include ':app', ':slidingmenu', ':graphview'
 project(':slidingmenu').projectDir = new File('SlidingMenu/library')
+project(':graphview').projectDir = new File('GraphView')

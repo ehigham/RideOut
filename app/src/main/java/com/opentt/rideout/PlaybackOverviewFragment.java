@@ -165,13 +165,19 @@ public class PlaybackOverviewFragment extends Fragment
             int thisID = 0;
             double thisLAT;
             double thisLNG;
+            float thisDistanceTravelled;
+            String thisDuration;
+            String thisDate;
 
             // Check to see if there are ride entries
             if ( !mDbHelper.isDataTableEmpty(db) ){
 
                 String[] projection = {RideSummary.COLUMN_NAME_RIDE_ID,
-                                       RideData.COLUMN_NAME_LATITUDE,
-                                       RideData.COLUMN_NAME_LONGITUDE};
+                                       RideSummary.COLUMN_NAME_LATITUDE,
+                                       RideSummary.COLUMN_NAME_LONGITUDE,
+                                       RideSummary.COLUMN_NAME_DATE,
+                                       RideSummary.COLUMN_NAME_DURATION,
+                                       RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED};
                 String selection = RideData.COLUMN_NAME_RIDE_ID;
                 String sortOrder = selection + " ASC";
 
@@ -179,32 +185,33 @@ public class PlaybackOverviewFragment extends Fragment
 
                     Cursor cursor = db.query(
                             RideSummary.TABLE_NAME,
-                            projection,
-                            selection,
-                            null,
-                            null,
-                            null,
-                            sortOrder
-                    );
+                            projection, null, null, null, null, sortOrder);
 
                     if ((cursor != null) && (cursor.moveToFirst())) {
                         do{
 
                             thisID = cursor.getInt(cursor
-                                    .getColumnIndexOrThrow(RideData.COLUMN_NAME_RIDE_ID));
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_RIDE_ID));
                             thisLAT = cursor.getDouble(cursor
-                                    .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE));
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LATITUDE));
                             thisLNG = cursor.getDouble(cursor
-                                    .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE));
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LONGITUDE));
+                            thisDuration = cursor.getString(cursor
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DURATION));
+                            thisDistanceTravelled = cursor.getFloat(cursor
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED));
+                            thisDate = cursor.getString(cursor
+                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DATE));
 
                             markerOptionses.add( new MarkerOptions()
                                     .title("Ride " + Integer.toString(thisID))
                                     .position(new LatLng(thisLAT, thisLNG))
-                                    //.snippet("This is a simple marker")
+                                    .snippet(thisDistanceTravelled + "m, " + thisDuration)
                                     .icon(BitmapDescriptorFactory.defaultMarker(((float)thisID)*10.0f))
                                     );
 
                         } while ( cursor.moveToNext() );
+                        cursor.close();
                     }
                 } catch (IllegalArgumentException ex) {
                     throw new IllegalArgumentException("Could not get rideID from database");
