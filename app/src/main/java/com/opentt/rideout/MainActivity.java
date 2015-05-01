@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar();
-        RideDataDbHelper.importDb();
+        //RideDataDbHelper.importDb();
 
         // Locate the UI widgets.
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);

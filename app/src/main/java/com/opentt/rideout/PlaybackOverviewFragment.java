@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.opentt.rideout.RideDataContract.RideData;
+import com.opentt.rideout.RideDataContract.RideSummary;
 
 public class PlaybackOverviewFragment extends Fragment
         implements OnMapReadyCallback,
@@ -161,16 +162,15 @@ public class PlaybackOverviewFragment extends Fragment
             db = mDbHelper.getReadableDatabase();
 
             // Some vars for database navigation
-            int prevID = 0;
             int thisID = 0;
             double thisLAT;
             double thisLNG;
 
             // Check to see if there are ride entries
-            if ( !mDbHelper.isTableEmpty(db) ){
+            if ( !mDbHelper.isDataTableEmpty(db) ){
 
-                String[] projection = {RideData.COLUMN_NAME_RIDE_ID,
-                                       RideDataContract.RideData.COLUMN_NAME_LATITUDE,
+                String[] projection = {RideSummary.COLUMN_NAME_RIDE_ID,
+                                       RideData.COLUMN_NAME_LATITUDE,
                                        RideData.COLUMN_NAME_LONGITUDE};
                 String selection = RideData.COLUMN_NAME_RIDE_ID;
                 String sortOrder = selection + " ASC";
@@ -178,7 +178,7 @@ public class PlaybackOverviewFragment extends Fragment
                 try{
 
                     Cursor cursor = db.query(
-                            RideDataContract.RideData.TABLE_NAME,
+                            RideSummary.TABLE_NAME,
                             projection,
                             selection,
                             null,
@@ -197,7 +197,6 @@ public class PlaybackOverviewFragment extends Fragment
                             thisLNG = cursor.getDouble(cursor
                                     .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE));
 
-
                             markerOptionses.add( new MarkerOptions()
                                     .title("Ride " + Integer.toString(thisID))
                                     .position(new LatLng(thisLAT, thisLNG))
@@ -205,13 +204,6 @@ public class PlaybackOverviewFragment extends Fragment
                                     .icon(BitmapDescriptorFactory.defaultMarker(((float)thisID)*10.0f))
                                     );
 
-                            prevID = thisID;
-
-                            // Increment cursor until next rideID is found
-                            while ((cursor.moveToNext()) && (thisID == prevID)) {
-                                thisID = cursor.getInt(cursor
-                                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_RIDE_ID));
-                            }
                         } while ( cursor.moveToNext() );
                     }
                 } catch (IllegalArgumentException ex) {

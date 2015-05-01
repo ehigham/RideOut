@@ -11,15 +11,23 @@ import android.location.Location;
 import android.os.*;
 import android.os.Process;
 import android.preference.PreferenceManager;
+import android.test.SingleLaunchActivityTestCase;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.opentt.rideout.RideDataContract.RideData;
+import com.opentt.rideout.RideDataContract.RideSummary;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class DataAcquisitionService extends Service implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener, Handler.Callback {
@@ -45,8 +53,11 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     private static SQLiteDatabase db;
     private static int rideID;
     private static double[] acceleration = new double[3]; // acceleration in x(0), y(1), z(2);
-    private static double leanangle;
+    private static double leanangle = 0.0;
 
+    /* Today's Date */
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private String today;
 
     /** Location Variables */
 
@@ -67,6 +78,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     protected LocationRequest mLocationRequest;
 
     /* Represents a geographical location.*/
+    protected static Location mOriginalLocation;
     protected static Location mCurrentLocation;
 
     /** Background Service Variables */
@@ -83,7 +95,6 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     @Override
     public void onCreate(){
         super.onCreate();
-        // TODO: Get user preferences (eg Location/Hardware Sensors)
 
         _handler = getNewHandler();
     }
@@ -133,6 +144,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 db.close();
                 // Get a writable database for data insertion
                 db = mDbHelper.getWritableDatabase();
+                // Get Today's Time/Date
+                today = dateFormat.format(new Date());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -183,21 +196,22 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         }
 
         Toast.makeText(this,"Disabling Data Acquisition",Toast.LENGTH_SHORT).show();
-        if ( db != null ) {
-            mDbHelper.exportDB(db);
-            db.close();
-        }
+
+        // Update summary database table and close.
+        new UpdateSummaryTable().execute();
+
     }
 
     protected static void insertData(){
-        // TODO: Fix arguments to put actual values in!
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(RideDataContract.RideData.COLUMN_NAME_RIDE_ID, rideID);
+        values.put(RideData.COLUMN_NAME_RIDE_ID, rideID);
         values.put(RideData.COLUMN_NAME_TIME_STAMP, mCurrentLocation.getTime());
         values.put(RideData.COLUMN_NAME_LATITUDE, mCurrentLocation.getLatitude());
         values.put(RideData.COLUMN_NAME_LONGITUDE, mCurrentLocation.getLongitude());
+        values.put(RideData.COLUMN_NAME_DISTANCE_TRAVELLED,
+                mOriginalLocation.distanceTo(mCurrentLocation));
         values.put(RideData.COLUMN_NAME_ALTITUDE,
                 mCurrentLocation.hasAltitude() ? mCurrentLocation.getAltitude() : -1);
         values.put(RideData.COLUMN_NAME_SPEED,
@@ -231,7 +245,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         // Initialise the rideID to zero (will be changed if a ride was found in database)
         rideID = 0;
 
-        if (!mDbHelper.isTableEmpty(db)) {
+        if (!mDbHelper.isDataTableEmpty(db)) {
             Log.i(TAG, "Existing database found, Acquiring new rideID");
 
             // Define a projection that specifies which columns from the database
@@ -246,9 +260,9 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
             try {
                 Cursor cursor = db.query(
-                        RideData.TABLE_NAME,       // Table to query
+                        RideData.TABLE_NAME,        // Table to query
                         projection,                 // The columns to return
-                        selection,                  // The columns for the WHERE clause
+                        null,                       // The columns for the WHERE clause
                         null,                       // The values for the WHERE clause
                         null,                       // Don't group rows
                         null,                       // Don't filter by row groups
@@ -374,6 +388,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this, _looper);
+
+        mOriginalLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
     /**
@@ -398,4 +414,139 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
     }
 
+    private class UpdateSummaryTable extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // Check if database is not null, closed or read only
+            if ( db == null ){
+                db = mDbHelper.getWritableDatabase();
+            } else if ( db.isReadOnly() ){
+                db.close();
+                db = mDbHelper.getWritableDatabase();
+            } else if ( !db.isOpen() ){
+                db = mDbHelper.getWritableDatabase();
+            }
+
+            // Was there any ride data logged?
+            if ( !mDbHelper.isRideEntryEmpty(db,rideID) ) {
+
+                ContentValues values = new ContentValues();
+                values.put(RideSummary.COLUMN_NAME_RIDE_ID, rideID);
+                values.put(RideSummary.COLUMN_NAME_DATE, today);
+
+                // Query the database for start Lat and Lon and duration
+                String[] projection = {RideData._ID,
+                                       RideData.COLUMN_NAME_LATITUDE,
+                                       RideData.COLUMN_NAME_LONGITUDE,
+                                       RideData.COLUMN_NAME_TIME_STAMP,
+                                       RideData.COLUMN_NAME_DISTANCE_TRAVELLED};
+
+                String selection = RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+                String[] selectionEquals = new String[]{Integer.toString(rideID)};
+
+                String sortOrder = RideData._ID + " ASC";
+
+                try{
+                    Cursor cursor = db.query(RideData.TABLE_NAME,
+                            projection, selection, selectionEquals, null, null, sortOrder);
+
+                    if (cursor != null){
+                        cursor.moveToFirst();
+
+                        double summaryLat = cursor.getDouble(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE));
+                        double summaryLng = cursor.getDouble(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE));
+
+                        long startTimeMillis = cursor.getLong(cursor
+                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
+
+                        cursor.moveToLast();
+                        long finishTimeMillis = cursor.getLong(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
+
+                        float distanceTravelled = cursor.getFloat(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_DISTANCE_TRAVELLED));
+
+                        long timeDiff = finishTimeMillis - startTimeMillis;
+
+                        String duration = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(timeDiff),
+                                TimeUnit.MILLISECONDS.toMinutes(timeDiff) -
+                                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timeDiff)),
+                                TimeUnit.MILLISECONDS.toSeconds(timeDiff) -
+                                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
+
+                        values.put(RideSummary.COLUMN_NAME_LATITUDE, summaryLat);
+                        values.put(RideSummary.COLUMN_NAME_LONGITUDE, summaryLng);
+                        values.put(RideSummary.COLUMN_NAME_DURATION, duration);
+                        values.put(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED, distanceTravelled);
+
+                        cursor.close();
+                    }
+
+                } catch (IllegalArgumentException ex){
+                    throw new IllegalArgumentException("Could not query database");
+                }
+
+
+                values.put(RideSummary.COLUMN_NAME_MAX_SPEED, getMaxSpeed());
+                values.put(RideSummary.COLUMN_NAME_MAX_LEAN_ANGLE, getMaxLeanAngle());
+
+                long id = db.insert(RideSummary.TABLE_NAME, null, values);
+
+                if (id == -1) {
+                    Log.e(TAG, "Could not update database table: " + RideSummary.TABLE_NAME);
+                }
+
+            } else{
+                Log.i(TAG,"No data was found for this ride entry");
+            }
+
+            mDbHelper.exportDB(db);
+            db.close();
+
+            return null;
+        }
+
+        private double getMaxSpeed(){
+            double max_speed = 0.0;
+
+            String[] projection = {RideData.COLUMN_NAME_SPEED};
+            String sortOrder = RideData.COLUMN_NAME_SPEED + " DESC";
+
+            Cursor cursor = db.query(RideData.TABLE_NAME,
+                    projection, null, null, null, null, sortOrder);
+
+            if (cursor != null) {
+                cursor.moveToFirst();
+                max_speed = cursor.getDouble(cursor
+                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_SPEED));
+                cursor.close();
+            }
+
+            return max_speed;
+        }
+
+        private double getMaxLeanAngle(){
+
+            double max_lean_angle = 0.0;
+
+            String[] projection = {RideData.COLUMN_NAME_SPEED};
+            String sortOrder = RideData.COLUMN_NAME_SPEED + " DESC";
+
+            Cursor cursor = db.query(RideData.TABLE_NAME,
+                    projection, null, null, null, null, sortOrder);
+
+            if ( cursor != null ){
+                cursor.moveToFirst();
+                max_lean_angle = cursor.getDouble(cursor
+                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_LEAN_ANGLE));
+                cursor.close();
+            }
+
+            return max_lean_angle;
+        }
+    }
 }

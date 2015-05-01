@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.opentt.rideout.RideDataContract.RideData;
+import com.opentt.rideout.RideDataContract.RideSummary;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,31 +40,55 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_DATA_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RideDataContract.RideData.TABLE_NAME + " (" +
                     RideData._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    RideData.COLUMN_NAME_RIDE_ID        + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_TIME_STAMP     + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LATITUDE       + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LONGITUDE      + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ALTITUDE       + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_SPEED          + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_BEARING        + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_X + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_Y + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_Z + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LEAN_ANGLE     + TEXT_TYPE + " )";
+                    RideData.COLUMN_NAME_RIDE_ID            + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ALTITUDE           + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_SPEED              + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_BEARING            + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_X     + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_Y     + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_Z     + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LEAN_ANGLE         + TEXT_TYPE + " )";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_CREATE_SUMMARY_TABLE =
+            "CREATE TABLE IF NOT EXISTS " + RideSummary.TABLE_NAME + " (" +
+                    RideSummary._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RideSummary.COLUMN_NAME_RIDE_ID            + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_DATE               + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_DURATION           + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_MAX_SPEED          + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_MAX_LEAN_ANGLE     + TEXT_TYPE + " )";
+
+
+    private static final String SQL_DELETE_DATA_TABLE =
             "DROP TABLE IF EXISTS " + RideData.TABLE_NAME;
+
+    private static final String SQL_DELETE_SUMMARY_TABLE =
+            "DROP TABLE IF EXISTS " + RideSummary.TABLE_NAME;
 
     public RideDataDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void onCreate(SQLiteDatabase db){
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_DATA_TABLE);
+        db.execSQL(SQL_CREATE_SUMMARY_TABLE);
         Log.i(TAG, "Database Path = " + db.getPath());
+    }
+
+    public void clearDb(SQLiteDatabase db){
+        db.execSQL(SQL_DELETE_DATA_TABLE);
+        db.execSQL(SQL_DELETE_SUMMARY_TABLE);
+        onCreate(db);
     }
 
     /**
@@ -89,7 +114,8 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         // TODO: Change method to store old entries in new database
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_DATA_TABLE);
+        db.execSQL(SQL_DELETE_SUMMARY_TABLE);
         onCreate(db);
     }
 
@@ -135,7 +161,7 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         }
     }
 
-    public boolean isTableEmpty(SQLiteDatabase db){
+    public boolean isDataTableEmpty(SQLiteDatabase db){
         boolean flag = false;
 
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + RideData.TABLE_NAME, null);
@@ -149,6 +175,27 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         }
 
         return flag;
+    }
+
+    public boolean isRideEntryEmpty(SQLiteDatabase db, int rideID){
+
+        if ( !isDataTableEmpty(db) ) {
+
+            String query = "SELECT COUNT(*) FROM " + RideData.TABLE_NAME  +
+            " WHERE " + RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+
+            Cursor cursor = db.rawQuery(query,
+                    new String[] {Integer.toString(rideID)});
+
+            if ( cursor.moveToFirst() ){
+                cursor.close();
+                return false;
+            }
+
+            cursor.close();
+        }
+
+        return true;
     }
 
     public void exportDB(SQLiteDatabase db){

@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.preference.Preference;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -75,7 +76,7 @@ public class SettingsActivity extends PreferenceActivity implements
                     Log.i(TAG, "Resetting Preferences");
                     SharedPreferences.Editor editor = mSharedPreferences.edit();
                     editor.clear();
-                    editor.commit();
+                    editor.apply();
                     Toast.makeText(context,"Preferences Reset!", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -101,7 +102,12 @@ public class SettingsActivity extends PreferenceActivity implements
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Log.i(TAG, "Resetting Data");
-                    //TODO: Clear data
+
+                    RideDataDbHelper mDbHelper = new RideDataDbHelper(getApplicationContext());
+                    SQLiteDatabase db = mDbHelper.getWritableDatabase();
+                    mDbHelper.clearDb(db);
+                    db.close();
+
                     Toast.makeText(context,"Data Cleared!", Toast.LENGTH_SHORT).show();
                 }
             });
