@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
-import com.opentt.rideout.RideDataContract.RideEntry;
+import com.opentt.rideout.RideDataContract.RideData;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 
 public class RideDataDbHelper extends SQLiteOpenHelper{
-    private static final String TAG = RideDataDbHelper.class.getSimpleName();
+    private static final String TAG = "RideDataDbHelper";
 
     public static final String DATABASE_NAME = "RideData.db";
     public static final int DATABASE_VERSION = 1;
@@ -40,22 +40,22 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
     private static final String TEXT_TYPE = " TEXT";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE IF NOT EXISTS " + RideEntry.TABLE_NAME + " (" +
-                    RideEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    RideEntry.COLUMN_NAME_RIDE_ID        + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_TIME_STAMP     + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_LATITUDE       + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_LONGITUDE      + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_ALTITUDE       + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_SPEED          + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_BEARING        + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_ACCELERATION_X + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_ACCELERATION_Y + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_ACCELERATION_Z + TEXT_TYPE + COMMA_SEP +
-                    RideEntry.COLUMN_NAME_LEAN_ANGLE     + TEXT_TYPE + " )";
+            "CREATE TABLE IF NOT EXISTS " + RideDataContract.RideData.TABLE_NAME + " (" +
+                    RideData._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RideData.COLUMN_NAME_RIDE_ID        + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_TIME_STAMP     + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LATITUDE       + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LONGITUDE      + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ALTITUDE       + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_SPEED          + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_BEARING        + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_X + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_Y + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_ACCELERATION_Z + TEXT_TYPE + COMMA_SEP +
+                    RideData.COLUMN_NAME_LEAN_ANGLE     + TEXT_TYPE + " )";
 
     private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + RideEntry.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + RideData.TABLE_NAME;
 
     public RideDataDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -138,12 +138,12 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
     public boolean isTableEmpty(SQLiteDatabase db){
         boolean flag = false;
 
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + RideEntry.TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + RideData.TABLE_NAME, null);
 
         if ( cursor != null && cursor.moveToFirst() ){
              if ( cursor.getInt(0) == 0 ) { // If table is empty, a "0" is placed in row 1, column 0
                  flag = true;
-                 Log.i(TAG,"Found zero entry in row 1: Table " + RideEntry.TABLE_NAME + " is empty");
+                 Log.i(TAG,"Found zero entry in row 1: Table " + RideData.TABLE_NAME + " is empty");
              }
             cursor.close();
         }

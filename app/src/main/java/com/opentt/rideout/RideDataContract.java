@@ -23,7 +23,7 @@ public class RideDataContract {
     // Empty constructor in case of accidental instantiation
     public RideDataContract() {}
 
-    public static abstract class RideEntry implements BaseColumns {
+    public static abstract class RideData implements BaseColumns {
         public static final String TABLE_NAME = "ride_data";
         public static final String COLUMN_NAME_RIDE_ID = "rideID";
         public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
@@ -37,4 +37,16 @@ public class RideDataContract {
         public static final String COLUMN_NAME_ACCELERATION_Z = "z_acceleration";
         public static final String COLUMN_NAME_LEAN_ANGLE = "lean_angle";
     }
+
+    public static abstract class RideSummary implements BaseColumns {
+        public static final String TABLE_NAME = "ride_summary";
+        public static final String COLUMN_NAME_RIDE_ID = "rideID";
+        public static final String COLUMN_NAME_DURARION = "duration";
+        public static final String COLUMN_NAME_LATITUDE = "latitude";
+        public static final String COLUMN_NAME_LONGITUDE = "longitude";
+        public static final String COLUMN_NAME_MAX_SPEED = "max_speed";
+        public static final String COLUMN_NAME_MAX_LEAN_ANGLE = "max_lean_angle";
+    }
+
+
 }

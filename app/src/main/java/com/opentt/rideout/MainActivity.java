@@ -41,7 +41,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar();
-        //RideDataDbHelper.importDb();
+        RideDataDbHelper.importDb();
 
         // Locate the UI widgets.
         mDataAcquisitionToggle = (ToggleButton) findViewById(R.id.togglebutton);
@@ -129,6 +129,7 @@ public class MainActivity extends ActionBarActivity {
             Intent intent = new Intent(this, DataAcquisitionService.class);
             intent.setAction(DataAcquisitionService.ACTION_STOP_ACQUISITION);
             startService(intent);
+            mDataAcquisitionToggle.setChecked(false);
         }
 
         startActivity(playbackActivity);

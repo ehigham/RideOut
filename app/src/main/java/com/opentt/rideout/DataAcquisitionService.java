@@ -14,7 +14,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.opentt.rideout.RideDataContract.RideEntry;
+import com.opentt.rideout.RideDataContract.RideData;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -194,24 +194,24 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(RideEntry.COLUMN_NAME_RIDE_ID, rideID);
-        values.put(RideEntry.COLUMN_NAME_TIME_STAMP, mCurrentLocation.getTime());
-        values.put(RideEntry.COLUMN_NAME_LATITUDE, mCurrentLocation.getLatitude());
-        values.put(RideEntry.COLUMN_NAME_LONGITUDE, mCurrentLocation.getLongitude());
-        values.put(RideEntry.COLUMN_NAME_ALTITUDE,
+        values.put(RideDataContract.RideData.COLUMN_NAME_RIDE_ID, rideID);
+        values.put(RideData.COLUMN_NAME_TIME_STAMP, mCurrentLocation.getTime());
+        values.put(RideData.COLUMN_NAME_LATITUDE, mCurrentLocation.getLatitude());
+        values.put(RideData.COLUMN_NAME_LONGITUDE, mCurrentLocation.getLongitude());
+        values.put(RideData.COLUMN_NAME_ALTITUDE,
                 mCurrentLocation.hasAltitude() ? mCurrentLocation.getAltitude() : -1);
-        values.put(RideEntry.COLUMN_NAME_SPEED,
+        values.put(RideData.COLUMN_NAME_SPEED,
                 mCurrentLocation.hasSpeed() ? mCurrentLocation.getSpeed() : -1);
-        values.put(RideEntry.COLUMN_NAME_BEARING,
+        values.put(RideData.COLUMN_NAME_BEARING,
                 mCurrentLocation.hasBearing() ? mCurrentLocation.getBearing() : -1);
-        values.put(RideEntry.COLUMN_NAME_ACCELERATION_X, acceleration[0]);
-        values.put(RideEntry.COLUMN_NAME_ACCELERATION_Y, acceleration[1]);
-        values.put(RideEntry.COLUMN_NAME_ACCELERATION_Z, acceleration[2]);
-        values.put(RideEntry.COLUMN_NAME_LEAN_ANGLE, leanangle);
+        values.put(RideData.COLUMN_NAME_ACCELERATION_X, acceleration[0]);
+        values.put(RideData.COLUMN_NAME_ACCELERATION_Y, acceleration[1]);
+        values.put(RideData.COLUMN_NAME_ACCELERATION_Z, acceleration[2]);
+        values.put(RideData.COLUMN_NAME_LEAN_ANGLE, leanangle);
 
         // Insert the new row, returning the primary key value of the new row
         long id;
-        id = db.insert(RideEntry.TABLE_NAME, null, values);
+        id = db.insert(RideData.TABLE_NAME, null, values);
 
         Log.d(TAG,"inserted row number = " + id);
 
@@ -237,16 +237,16 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
             // Define a projection that specifies which columns from the database
             // you will actually use after this query
             String[] projection = {
-                    RideEntry._ID,
-                    RideEntry.COLUMN_NAME_RIDE_ID
+                    RideData._ID,
+                    RideData.COLUMN_NAME_RIDE_ID
             };
 
-            String selection = RideEntry.COLUMN_NAME_RIDE_ID;
-            String sortOrder = RideEntry.COLUMN_NAME_RIDE_ID + " DESC";
+            String selection = RideData.COLUMN_NAME_RIDE_ID;
+            String sortOrder = RideData.COLUMN_NAME_RIDE_ID + " DESC";
 
             try {
                 Cursor cursor = db.query(
-                        RideEntry.TABLE_NAME,       // Table to query
+                        RideData.TABLE_NAME,       // Table to query
                         projection,                 // The columns to return
                         selection,                  // The columns for the WHERE clause
                         null,                       // The values for the WHERE clause
@@ -257,7 +257,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
                 if (cursor != null) {
                     cursor.moveToFirst();
-                    rideID = cursor.getInt(cursor.getColumnIndexOrThrow(RideEntry.COLUMN_NAME_RIDE_ID));
+                    rideID = cursor.getInt(cursor.getColumnIndexOrThrow(RideData.COLUMN_NAME_RIDE_ID));
                     cursor.close();
                 }
             } catch (IllegalArgumentException ex) {
