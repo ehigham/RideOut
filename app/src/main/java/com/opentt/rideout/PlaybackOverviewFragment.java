@@ -176,7 +176,6 @@ public class PlaybackOverviewFragment extends Fragment
             double thisLNG;
             float thisDistanceTravelled;
             String thisDuration;
-            String thisDate;
 
             // Check to see if there are ride entries
             if ( !mDbHelper.isDataTableEmpty(db) ){
@@ -184,7 +183,6 @@ public class PlaybackOverviewFragment extends Fragment
                 String[] projection = {RideSummary.COLUMN_NAME_RIDE_ID,
                                        RideSummary.COLUMN_NAME_LATITUDE,
                                        RideSummary.COLUMN_NAME_LONGITUDE,
-                                       RideSummary.COLUMN_NAME_TIME_STAMP,
                                        RideSummary.COLUMN_NAME_DURATION,
                                        RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED};
                 String sortOrder = RideSummary.COLUMN_NAME_RIDE_ID + " ASC";
@@ -209,8 +207,6 @@ public class PlaybackOverviewFragment extends Fragment
                                 .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DURATION);
                         int ColumnDis = cursor
                                 .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED);
-                        int ColumnDat = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_TIME_STAMP);
 
                         do{
 
@@ -219,7 +215,6 @@ public class PlaybackOverviewFragment extends Fragment
                             thisLNG = cursor.getDouble(ColumnLng);
                             thisDuration = cursor.getString(ColumnDur);
                             thisDistanceTravelled = cursor.getFloat(ColumnDis);
-                            thisDate = cursor.getString(ColumnDat);
 
                             markerOptionses.add( new MarkerOptions()
                                     .title("Ride " + Integer.toString(thisID))
