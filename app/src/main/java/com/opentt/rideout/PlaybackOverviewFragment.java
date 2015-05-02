@@ -1,3 +1,19 @@
+/**
+ * Copyright 2015 Edmund Higham. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.opentt.rideout;
 
 import android.app.Activity;
@@ -56,14 +72,8 @@ public class PlaybackOverviewFragment extends Fragment
     private GoogleMap mMap;
     private View mapView;
 
-    /** A test marker */
-    private Marker mTestMarker;
-
     /** Ride markers */
     private List<Marker> rideMarkers = new ArrayList<>();
-
-    /** Test Marker Position */
-    private LatLng TestMarkerLatLng = new LatLng(51.5033630,-0.1276250);
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -178,8 +188,7 @@ public class PlaybackOverviewFragment extends Fragment
                                        RideSummary.COLUMN_NAME_DATE,
                                        RideSummary.COLUMN_NAME_DURATION,
                                        RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED};
-                String selection = RideData.COLUMN_NAME_RIDE_ID;
-                String sortOrder = selection + " ASC";
+                String sortOrder = RideSummary.COLUMN_NAME_RIDE_ID + " ASC";
 
                 try{
 
@@ -188,20 +197,30 @@ public class PlaybackOverviewFragment extends Fragment
                             projection, null, null, null, null, sortOrder);
 
                     if ((cursor != null) && (cursor.moveToFirst())) {
+
+
+                        // Get column numbers for projected columns
+                        int ColumnID = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_RIDE_ID);
+                        int ColumnLat = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LATITUDE);
+                        int ColumnLng = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LONGITUDE);
+                        int ColumnDur = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DURATION);
+                        int ColumnDis = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED);
+                        int ColumnDat = cursor
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DATE);
+
                         do{
 
-                            thisID = cursor.getInt(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_RIDE_ID));
-                            thisLAT = cursor.getDouble(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LATITUDE));
-                            thisLNG = cursor.getDouble(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LONGITUDE));
-                            thisDuration = cursor.getString(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DURATION));
-                            thisDistanceTravelled = cursor.getFloat(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED));
-                            thisDate = cursor.getString(cursor
-                                    .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DATE));
+                            thisID = cursor.getInt(ColumnID);
+                            thisLAT = cursor.getDouble(ColumnLat);
+                            thisLNG = cursor.getDouble(ColumnLng);
+                            thisDuration = cursor.getString(ColumnDur);
+                            thisDistanceTravelled = cursor.getFloat(ColumnDis);
+                            thisDate = cursor.getString(ColumnDat);
 
                             markerOptionses.add( new MarkerOptions()
                                     .title("Ride " + Integer.toString(thisID))

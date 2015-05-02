@@ -179,23 +179,22 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
 
     public boolean isRideEntryEmpty(SQLiteDatabase db, int rideID){
 
-        if ( !isDataTableEmpty(db) ) {
+        boolean result = true;
 
-            String query = "SELECT COUNT(*) FROM " + RideData.TABLE_NAME  +
-            " WHERE " + RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+        String query = "SELECT COUNT(*) FROM " + RideData.TABLE_NAME +
+                " WHERE " + RideData.COLUMN_NAME_RIDE_ID + " = ? ";
 
-            Cursor cursor = db.rawQuery(query,
-                    new String[] {Integer.toString(rideID)});
+        Cursor cursor = db.rawQuery(query,
+                new String[]{Integer.toString(rideID)});
 
-            if ( cursor.moveToFirst() ){
-                cursor.close();
-                return false;
+        if ((cursor != null) && (cursor.moveToFirst())) {
+            if (cursor.getInt(0) != 0) {
+                result = false;
             }
-
             cursor.close();
         }
 
-        return true;
+        return result;
     }
 
     public void exportDB(SQLiteDatabase db){

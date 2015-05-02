@@ -18,37 +18,40 @@ package com.opentt.rideout;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.Marker;
 
+public class OverlayActivity extends Activity
+    implements GraphFragment.onPlotDataListener {
 
-public class PlaybackActivity extends Activity
-        implements PlaybackOverviewFragment.OnMarkerWindowClickListener {
-
-    /** Log Tag */
-    private static final String TAG = "PlaybackActivity";
+    private final String TAG = "OverlayActivity";
+    private int rideID;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_overlay);
 
-        setContentView(R.layout.activity_playback);
-        if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaybackOverviewFragment())
-                    .commit();
+        Intent intent = getIntent();
+
+        try{
+            rideID =  intent.getIntExtra("RideID", 1);
+            Log.i(TAG, "Received intent: " + rideID);
+        } catch (NullPointerException ex){
+            throw new NullPointerException("Failed to get RideID from OverviewActivity");
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_playback, menu);
+        getMenuInflater().inflate(R.menu.menu_overlay, menu);
         return true;
     }
 
@@ -67,24 +70,8 @@ public class PlaybackActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Called by PlaybackOverviewFragment
-     * Launches new fragment containing polyline for that marker
-     */
     @Override
-    public void onMarkerWindowClick(final Marker marker){
-        Toast.makeText(PlaybackActivity.this,"Received " + marker.getId(), Toast.LENGTH_SHORT ).show();
-
-        String mkrTtl = marker.getTitle();
-
-        int RideID = Integer.valueOf(mkrTtl.substring(5,mkrTtl.length()));
-
-        Log.i(TAG,"Sending RideID " + RideID + " to OverlayActivity");
-
-        Intent intent = new Intent(this, OverlayActivity.class);
-        intent.putExtra("RideID",RideID);
-
-        startActivity(intent);
+    public void putID(int rideID) {
 
     }
 }

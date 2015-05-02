@@ -67,7 +67,7 @@ limitations under the License.
         <!-- Legal Info Activity -->
         <activity
             android:name=".LegalInfoActivity"
-            android:label="@string/title_activity_legal"  />
+            android:label="@string/title_activity_legal" />
 
         <!-- Data Acquisition Service -->
         <service
@@ -75,6 +75,7 @@ limitations under the License.
             android:enabled="true"
             android:exported="false" >
             <intent-filter>
+
                 <!-- Start/Stop Service -->
                 <action android:name="start" />
                 <action android:name="stop" />
@@ -88,6 +89,10 @@ limitations under the License.
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.opentt.rideout.MainActivity" />
+        </activity>
+        <activity
+            android:name=".OverlayActivity"
+            android:label="@string/title_activity_overlay" >
         </activity>
     </application>
 

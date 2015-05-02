@@ -16,13 +16,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.opentt.rideout.PlaybackOverviewFragment">
+    tools:context="com.opentt.rideout.GraphFragment"
+    android:orientation="vertical">
 
-    <fragment
-        android:id="@+id/map_overview"
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/data_plot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        class="com.google.android.gms.maps.MapFragment"
-        />
+        android:layout_height="match_parent"/>
+
 </RelativeLayout>

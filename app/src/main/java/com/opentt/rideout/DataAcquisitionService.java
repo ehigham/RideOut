@@ -1,3 +1,19 @@
+/**
+ * Copyright 2015 Edmund Higham. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.opentt.rideout;
 
 import android.app.Service;
@@ -452,7 +468,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                     Cursor cursor = db.query(RideData.TABLE_NAME,
                             projection, selection, selectionEquals, null, null, sortOrder);
 
-                    if (cursor != null){
+                    if (cursor != null) {
                         cursor.moveToFirst();
 
                         double summaryLat = cursor.getDouble(cursor
@@ -533,8 +549,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
             double max_lean_angle = 0.0;
 
-            String[] projection = {RideData.COLUMN_NAME_SPEED};
-            String sortOrder = RideData.COLUMN_NAME_SPEED + " DESC";
+            String[] projection = {RideData.COLUMN_NAME_LEAN_ANGLE};
+            String sortOrder = RideData.COLUMN_NAME_LEAN_ANGLE + " DESC";
 
             Cursor cursor = db.query(RideData.TABLE_NAME,
                     projection, null, null, null, null, sortOrder);

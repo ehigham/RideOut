@@ -16,13 +16,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.opentt.rideout.PlaybackOverviewFragment">
+    tools:context="com.opentt.rideout.OverlayActivity">
+
 
     <fragment
-        android:id="@+id/map_overview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        class="com.google.android.gms.maps.MapFragment"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:name="com.opentt.rideout.GraphFragment"
+        android:id="@+id/fragment"
+        tools:layout="@layout/fragment_graph"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/fragment2" />
+
+    <fragment
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:name="com.opentt.rideout.PolylineFragment"
+        android:id="@+id/fragment2"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        tools:layout="@layout/fragment_playback_overview" />
 </RelativeLayout>
