@@ -45,7 +45,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.opentt.rideout.RideDataContract.RideData;
 import com.opentt.rideout.RideDataContract.RideSummary;
 
 public class PlaybackOverviewFragment extends Fragment
@@ -185,7 +184,7 @@ public class PlaybackOverviewFragment extends Fragment
                 String[] projection = {RideSummary.COLUMN_NAME_RIDE_ID,
                                        RideSummary.COLUMN_NAME_LATITUDE,
                                        RideSummary.COLUMN_NAME_LONGITUDE,
-                                       RideSummary.COLUMN_NAME_DATE,
+                                       RideSummary.COLUMN_NAME_TIME_STAMP,
                                        RideSummary.COLUMN_NAME_DURATION,
                                        RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED};
                 String sortOrder = RideSummary.COLUMN_NAME_RIDE_ID + " ASC";
@@ -211,7 +210,7 @@ public class PlaybackOverviewFragment extends Fragment
                         int ColumnDis = cursor
                                 .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED);
                         int ColumnDat = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DATE);
+                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_TIME_STAMP);
 
                         do{
 

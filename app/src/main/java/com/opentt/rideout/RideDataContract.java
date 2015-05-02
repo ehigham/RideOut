@@ -29,7 +29,6 @@ public class RideDataContract {
         public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
-        public static final String COLUMN_NAME_DISTANCE_TRAVELLED = "distance_travelled";
         public static final String COLUMN_NAME_ALTITUDE = "altitude";
         public static final String COLUMN_NAME_SPEED = "speed";
         public static final String COLUMN_NAME_BEARING = "bearing";
@@ -42,9 +41,9 @@ public class RideDataContract {
     public static abstract class RideSummary implements BaseColumns {
         public static final String TABLE_NAME = "ride_summary";
         public static final String COLUMN_NAME_RIDE_ID = "rideID";
+        public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
-        public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_DURATION = "duration";
         public static final String COLUMN_NAME_DISTANCE_TRAVELLED = "distance_travelled";
         public static final String COLUMN_NAME_MAX_SPEED = "max_speed";

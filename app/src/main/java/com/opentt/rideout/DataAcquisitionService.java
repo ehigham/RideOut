@@ -27,7 +27,6 @@ import android.location.Location;
 import android.os.*;
 import android.os.Process;
 import android.preference.PreferenceManager;
-import android.test.SingleLaunchActivityTestCase;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -40,9 +39,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class DataAcquisitionService extends Service implements GoogleApiClient.ConnectionCallbacks,
@@ -72,8 +71,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     private static double leanangle = 0.0;
 
     /* Today's Date */
-    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-    private String today;
+    private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private static String mTimeStamp;
 
     /** Location Variables */
 
@@ -160,8 +159,6 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 db.close();
                 // Get a writable database for data insertion
                 db = mDbHelper.getWritableDatabase();
-                // Get Today's Time/Date
-                today = dateFormat.format(new Date());
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -223,11 +220,9 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(RideData.COLUMN_NAME_RIDE_ID, rideID);
-        values.put(RideData.COLUMN_NAME_TIME_STAMP, mCurrentLocation.getTime());
+        values.put(RideData.COLUMN_NAME_TIME_STAMP, mTimeStamp);
         values.put(RideData.COLUMN_NAME_LATITUDE, mCurrentLocation.getLatitude());
         values.put(RideData.COLUMN_NAME_LONGITUDE, mCurrentLocation.getLongitude());
-        values.put(RideData.COLUMN_NAME_DISTANCE_TRAVELLED,
-                mOriginalLocation.distanceTo(mCurrentLocation));
         values.put(RideData.COLUMN_NAME_ALTITUDE,
                 mCurrentLocation.hasAltitude() ? mCurrentLocation.getAltitude() : -1);
         values.put(RideData.COLUMN_NAME_SPEED,
@@ -271,7 +266,6 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                     RideData.COLUMN_NAME_RIDE_ID
             };
 
-            String selection = RideData.COLUMN_NAME_RIDE_ID;
             String sortOrder = RideData.COLUMN_NAME_RIDE_ID + " DESC";
 
             try {
@@ -391,6 +385,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        mTimeStamp = dateFormat.format(new Date());
         Log.d(TAG,"Location Updated @: " + mCurrentLocation.getTime() +
         " by thread " + Thread.currentThread().getName());
         insertData();
@@ -450,14 +445,13 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
                 ContentValues values = new ContentValues();
                 values.put(RideSummary.COLUMN_NAME_RIDE_ID, rideID);
-                values.put(RideSummary.COLUMN_NAME_DATE, today);
 
                 // Query the database for start Lat and Lon and duration
                 String[] projection = {RideData._ID,
+                                       RideData.COLUMN_NAME_TIME_STAMP,
                                        RideData.COLUMN_NAME_LATITUDE,
                                        RideData.COLUMN_NAME_LONGITUDE,
-                                       RideData.COLUMN_NAME_TIME_STAMP,
-                                       RideData.COLUMN_NAME_DISTANCE_TRAVELLED};
+                                       RideData.COLUMN_NAME_TIME_STAMP};
 
                 String selection = RideData.COLUMN_NAME_RIDE_ID + " = ? ";
                 String[] selectionEquals = new String[]{Integer.toString(rideID)};
@@ -476,17 +470,45 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                         double summaryLng = cursor.getDouble(cursor
                                 .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE));
 
-                        long startTimeMillis = cursor.getLong(cursor
-                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
-
-                        cursor.moveToLast();
-                        long finishTimeMillis = cursor.getLong(cursor
+                        mTimeStamp = cursor.getString(cursor
                                 .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
 
-                        float distanceTravelled = cursor.getFloat(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_DISTANCE_TRAVELLED));
+                        //  Note, reuse of these variables is for convenience only.
+                        mOriginalLocation.setLatitude(summaryLat);
+                        mOriginalLocation.setLongitude(summaryLng);
 
-                        long timeDiff = finishTimeMillis - startTimeMillis;
+                        values.put(RideSummary.COLUMN_NAME_LATITUDE, summaryLat);
+                        values.put(RideSummary.COLUMN_NAME_LONGITUDE, summaryLng);
+                        values.put(RideSummary.COLUMN_NAME_TIME_STAMP, mTimeStamp);
+
+                        Date start = new Date(0);
+                        try {
+                            start = dateFormat.parse(mTimeStamp);
+                        } catch (ParseException ex){
+                            ex.printStackTrace();
+                        }
+
+                        // Move to end of database entries for this rideID
+                        cursor.moveToLast();
+
+                        //  Note, reuse of these variables is for convenience only.
+                        mCurrentLocation.setLatitude(cursor.getDouble(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE)));
+                        mCurrentLocation.setLongitude(cursor.getDouble(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE)));
+
+                        mTimeStamp = cursor.getString(cursor
+                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
+
+
+                        Date finish = new Date(0);
+                        try {
+                            finish = dateFormat.parse(mTimeStamp);
+                        } catch (ParseException ex){
+                            ex.printStackTrace();
+                        }
+
+                        long timeDiff = finish.getTime() - start.getTime();
 
                         String duration = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(timeDiff),
                                 TimeUnit.MILLISECONDS.toMinutes(timeDiff) -
@@ -494,10 +516,11 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                                 TimeUnit.MILLISECONDS.toSeconds(timeDiff) -
                                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeDiff)));
 
-                        values.put(RideSummary.COLUMN_NAME_LATITUDE, summaryLat);
-                        values.put(RideSummary.COLUMN_NAME_LONGITUDE, summaryLng);
+
+
                         values.put(RideSummary.COLUMN_NAME_DURATION, duration);
-                        values.put(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED, distanceTravelled);
+                        values.put(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED,
+                                (double) mOriginalLocation.distanceTo(mCurrentLocation));
 
                         cursor.close();
                     }

@@ -47,7 +47,6 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
                     RideData.COLUMN_NAME_TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
                     RideData.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
                     RideData.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
                     RideData.COLUMN_NAME_ALTITUDE           + TEXT_TYPE + COMMA_SEP +
                     RideData.COLUMN_NAME_SPEED              + TEXT_TYPE + COMMA_SEP +
                     RideData.COLUMN_NAME_BEARING            + TEXT_TYPE + COMMA_SEP +
@@ -62,7 +61,7 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
                     RideSummary.COLUMN_NAME_RIDE_ID            + TEXT_TYPE + COMMA_SEP +
                     RideSummary.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
                     RideSummary.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_DATE               + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.COLUMN_NAME_TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
                     RideSummary.COLUMN_NAME_DURATION           + TEXT_TYPE + COMMA_SEP +
                     RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
                     RideSummary.COLUMN_NAME_MAX_SPEED          + TEXT_TYPE + COMMA_SEP +
