@@ -219,20 +219,20 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(RideData.COLUMN_NAME_RIDE_ID, rideID);
-        values.put(RideData.COLUMN_NAME_TIME_STAMP, mTimeStamp);
-        values.put(RideData.COLUMN_NAME_LATITUDE, mCurrentLocation.getLatitude());
-        values.put(RideData.COLUMN_NAME_LONGITUDE, mCurrentLocation.getLongitude());
-        values.put(RideData.COLUMN_NAME_ALTITUDE,
+        values.put(RideData.RIDE_ID, rideID);
+        values.put(RideData.TIME_STAMP, mTimeStamp);
+        values.put(RideData.LATITUDE, mCurrentLocation.getLatitude());
+        values.put(RideData.LONGITUDE, mCurrentLocation.getLongitude());
+        values.put(RideData.ALTITUDE,
                 mCurrentLocation.hasAltitude() ? mCurrentLocation.getAltitude() : -1);
-        values.put(RideData.COLUMN_NAME_SPEED,
+        values.put(RideData.SPEED,
                 mCurrentLocation.hasSpeed() ? mCurrentLocation.getSpeed() : -1);
-        values.put(RideData.COLUMN_NAME_BEARING,
+        values.put(RideData.BEARING,
                 mCurrentLocation.hasBearing() ? mCurrentLocation.getBearing() : -1);
-        values.put(RideData.COLUMN_NAME_ACCELERATION_X, acceleration[0]);
-        values.put(RideData.COLUMN_NAME_ACCELERATION_Y, acceleration[1]);
-        values.put(RideData.COLUMN_NAME_ACCELERATION_Z, acceleration[2]);
-        values.put(RideData.COLUMN_NAME_LEAN_ANGLE, leanangle);
+        values.put(RideData.ACCELERATION_X, acceleration[0]);
+        values.put(RideData.ACCELERATION_Y, acceleration[1]);
+        values.put(RideData.ACCELERATION_Z, acceleration[2]);
+        values.put(RideData.LEAN_ANGLE, leanangle);
 
         // Insert the new row, returning the primary key value of the new row
         long id;
@@ -263,10 +263,10 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
             // you will actually use after this query
             String[] projection = {
                     RideData._ID,
-                    RideData.COLUMN_NAME_RIDE_ID
+                    RideData.RIDE_ID
             };
 
-            String sortOrder = RideData.COLUMN_NAME_RIDE_ID + " DESC";
+            String sortOrder = RideData.RIDE_ID + " DESC";
 
             try {
                 Cursor cursor = db.query(
@@ -281,7 +281,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
                 if (cursor != null) {
                     cursor.moveToFirst();
-                    rideID = cursor.getInt(cursor.getColumnIndexOrThrow(RideData.COLUMN_NAME_RIDE_ID));
+                    rideID = cursor.getInt(cursor.getColumnIndexOrThrow(RideData.RIDE_ID));
                     cursor.close();
                 }
             } catch (IllegalArgumentException ex) {
@@ -444,16 +444,16 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
             if ( !mDbHelper.isRideEntryEmpty(db,rideID) ) {
 
                 ContentValues values = new ContentValues();
-                values.put(RideSummary.COLUMN_NAME_RIDE_ID, rideID);
+                values.put(RideSummary.RIDE_ID, rideID);
 
                 // Query the database for start Lat and Lon and duration
                 String[] projection = {RideData._ID,
-                                       RideData.COLUMN_NAME_TIME_STAMP,
-                                       RideData.COLUMN_NAME_LATITUDE,
-                                       RideData.COLUMN_NAME_LONGITUDE,
-                                       RideData.COLUMN_NAME_TIME_STAMP};
+                                       RideData.TIME_STAMP,
+                                       RideData.LATITUDE,
+                                       RideData.LONGITUDE,
+                                       RideData.TIME_STAMP};
 
-                String selection = RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+                String selection = RideData.RIDE_ID + " = ? ";
                 String[] selectionEquals = new String[]{Integer.toString(rideID)};
 
                 String sortOrder = RideData._ID + " ASC";
@@ -466,22 +466,23 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                         cursor.moveToFirst();
 
                         double summaryLat = cursor.getDouble(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE));
+                                .getColumnIndexOrThrow(RideData.LATITUDE));
                         double summaryLng = cursor.getDouble(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE));
+                                .getColumnIndexOrThrow(RideData.LONGITUDE));
 
                         mTimeStamp = cursor.getString(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
+                                .getColumnIndexOrThrow(RideData.TIME_STAMP));
 
                         //  Note, reuse of these variables is for convenience only.
                         mOriginalLocation.setLatitude(summaryLat);
                         mOriginalLocation.setLongitude(summaryLng);
 
-                        values.put(RideSummary.COLUMN_NAME_LATITUDE, summaryLat);
-                        values.put(RideSummary.COLUMN_NAME_LONGITUDE, summaryLng);
-                        values.put(RideSummary.COLUMN_NAME_TIME_STAMP, mTimeStamp);
+                        values.put(RideSummary.LATITUDE, summaryLat);
+                        values.put(RideSummary.LONGITUDE, summaryLng);
+                        values.put(RideSummary.TIME_STAMP, mTimeStamp);
 
                         Date start = new Date(0);
+
                         try {
                             start = dateFormat.parse(mTimeStamp);
                         } catch (ParseException ex){
@@ -493,12 +494,12 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
                         //  Note, reuse of these variables is for convenience only.
                         mCurrentLocation.setLatitude(cursor.getDouble(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE)));
+                                .getColumnIndexOrThrow(RideData.LATITUDE)));
                         mCurrentLocation.setLongitude(cursor.getDouble(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE)));
+                                .getColumnIndexOrThrow(RideData.LONGITUDE)));
 
                         mTimeStamp = cursor.getString(cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_TIME_STAMP));
+                                .getColumnIndexOrThrow(RideData.TIME_STAMP));
 
 
                         Date finish = new Date(0);
@@ -518,8 +519,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
 
 
-                        values.put(RideSummary.COLUMN_NAME_DURATION, duration);
-                        values.put(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED,
+                        values.put(RideSummary.DURATION, duration);
+                        values.put(RideSummary.DISTANCE_TRAVELLED,
                                 (double) mOriginalLocation.distanceTo(mCurrentLocation));
 
                         cursor.close();
@@ -530,8 +531,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
                 }
 
 
-                values.put(RideSummary.COLUMN_NAME_MAX_SPEED, getMaxSpeed());
-                values.put(RideSummary.COLUMN_NAME_MAX_LEAN_ANGLE, getMaxLeanAngle());
+                values.put(RideSummary.MAX_SPEED, getMaxSpeed());
+                values.put(RideSummary.MAX_LEAN_ANGLE, getMaxLeanAngle());
 
                 long id = db.insert(RideSummary.TABLE_NAME, null, values);
 
@@ -552,8 +553,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
         private double getMaxSpeed(){
             double max_speed = 0.0;
 
-            String[] projection = {RideData.COLUMN_NAME_SPEED};
-            String sortOrder = RideData.COLUMN_NAME_SPEED + " DESC";
+            String[] projection = {RideData.SPEED};
+            String sortOrder = RideData.SPEED + " DESC";
 
             Cursor cursor = db.query(RideData.TABLE_NAME,
                     projection, null, null, null, null, sortOrder);
@@ -561,7 +562,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
             if (cursor != null) {
                 cursor.moveToFirst();
                 max_speed = cursor.getDouble(cursor
-                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_SPEED));
+                        .getColumnIndexOrThrow(RideData.SPEED));
                 cursor.close();
             }
 
@@ -572,8 +573,8 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
 
             double max_lean_angle = 0.0;
 
-            String[] projection = {RideData.COLUMN_NAME_LEAN_ANGLE};
-            String sortOrder = RideData.COLUMN_NAME_LEAN_ANGLE + " DESC";
+            String[] projection = {RideData.LEAN_ANGLE};
+            String sortOrder = RideData.LEAN_ANGLE + " DESC";
 
             Cursor cursor = db.query(RideData.TABLE_NAME,
                     projection, null, null, null, null, sortOrder);
@@ -581,7 +582,7 @@ public class DataAcquisitionService extends Service implements GoogleApiClient.C
             if ( cursor != null ){
                 cursor.moveToFirst();
                 max_lean_angle = cursor.getDouble(cursor
-                        .getColumnIndexOrThrow(RideData.COLUMN_NAME_LEAN_ANGLE));
+                        .getColumnIndexOrThrow(RideData.LEAN_ANGLE));
                 cursor.close();
             }
 

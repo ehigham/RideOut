@@ -87,7 +87,7 @@ public class GraphFragment extends Fragment {
 
         graph = (GraphView) view.findViewById(R.id.data_plot);
 
-        new AddFieldToGraph().execute(RideData.COLUMN_NAME_SPEED);
+        new AddFieldToGraph().execute(RideData.SPEED);
 
 
     }
@@ -109,10 +109,10 @@ public class GraphFragment extends Fragment {
             double thisLNG;
             double thisField;
 
-                String[] projection = {RideData.COLUMN_NAME_LATITUDE,
-                                       RideData.COLUMN_NAME_LONGITUDE,
+                String[] projection = {RideData.LATITUDE,
+                                       RideData.LONGITUDE,
                                        field};
-                String selection = RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+                String selection = RideData.RIDE_ID + " = ? ";
                 String[] where = {String.valueOf(rideID)};
                 String SortOrder = RideData._ID + " ASC";
 
@@ -124,13 +124,9 @@ public class GraphFragment extends Fragment {
 
                     if ((cursor != null) && (cursor.moveToFirst())) {
 
-                        int ColumnLat = cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE);
-                        int ColumnLng = cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE);
-                        int ColumnField = cursor
-                                .getColumnIndexOrThrow(field);
-
+                        int ColumnLat = cursor.getColumnIndexOrThrow(RideData.LATITUDE);
+                        int ColumnLng = cursor.getColumnIndexOrThrow(RideData.LONGITUDE);
+                        int ColumnField = cursor.getColumnIndexOrThrow(field);
 
                         thisLAT = cursor.getDouble(ColumnLat);
                         thisLNG = cursor.getDouble(ColumnLng);

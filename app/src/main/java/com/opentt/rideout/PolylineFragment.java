@@ -121,9 +121,9 @@ public class PolylineFragment extends Fragment
             // Check to see if there are ride entries
             if (!mDbHelper.isDataTableEmpty(db)) {
 
-                String[] projection = {RideData.COLUMN_NAME_LATITUDE,
-                        RideData.COLUMN_NAME_LONGITUDE,};
-                String selection = RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+                String[] projection = {RideData.LATITUDE,
+                        RideData.LONGITUDE,};
+                String selection = RideData.RIDE_ID + " = ? ";
                 String[] where = {String.valueOf(RideID)};
                 String sortOrder = RideData._ID + " ASC";
 
@@ -141,9 +141,9 @@ public class PolylineFragment extends Fragment
 
                         // Get projection column numbers
                         int ColumnLat = cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LATITUDE);
+                                .getColumnIndexOrThrow(RideData.LATITUDE);
                         int ColumnLng = cursor
-                                .getColumnIndexOrThrow(RideData.COLUMN_NAME_LONGITUDE);
+                                .getColumnIndexOrThrow(RideData.LONGITUDE);
 
                         // LatLng for bounds and PolylineOptions
                         LatLng thisLatLng;

@@ -25,28 +25,28 @@ public class RideDataContract {
 
     public static abstract class RideData implements BaseColumns {
         public static final String TABLE_NAME = "ride_data";
-        public static final String COLUMN_NAME_RIDE_ID = "rideID";
-        public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
-        public static final String COLUMN_NAME_LATITUDE = "latitude";
-        public static final String COLUMN_NAME_LONGITUDE = "longitude";
-        public static final String COLUMN_NAME_ALTITUDE = "altitude";
-        public static final String COLUMN_NAME_SPEED = "speed";
-        public static final String COLUMN_NAME_BEARING = "bearing";
-        public static final String COLUMN_NAME_ACCELERATION_X = "x_acceleration";
-        public static final String COLUMN_NAME_ACCELERATION_Y = "y_acceleration";
-        public static final String COLUMN_NAME_ACCELERATION_Z = "z_acceleration";
-        public static final String COLUMN_NAME_LEAN_ANGLE = "lean_angle";
+        public static final String RIDE_ID = "rideID";
+        public static final String TIME_STAMP = "timestamp";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
+        public static final String ALTITUDE = "altitude";
+        public static final String SPEED = "speed";
+        public static final String BEARING = "bearing";
+        public static final String ACCELERATION_X = "x_acceleration";
+        public static final String ACCELERATION_Y = "y_acceleration";
+        public static final String ACCELERATION_Z = "z_acceleration";
+        public static final String LEAN_ANGLE = "lean_angle";
     }
 
     public static abstract class RideSummary implements BaseColumns {
         public static final String TABLE_NAME = "ride_summary";
-        public static final String COLUMN_NAME_RIDE_ID = "rideID";
-        public static final String COLUMN_NAME_TIME_STAMP = "timestamp";
-        public static final String COLUMN_NAME_LATITUDE = "latitude";
-        public static final String COLUMN_NAME_LONGITUDE = "longitude";
-        public static final String COLUMN_NAME_DURATION = "duration";
-        public static final String COLUMN_NAME_DISTANCE_TRAVELLED = "distance_travelled";
-        public static final String COLUMN_NAME_MAX_SPEED = "max_speed";
-        public static final String COLUMN_NAME_MAX_LEAN_ANGLE = "max_lean_angle";
+        public static final String RIDE_ID = "rideID";
+        public static final String TIME_STAMP = "timestamp";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
+        public static final String DURATION = "duration";
+        public static final String DISTANCE_TRAVELLED = "distance_travelled";
+        public static final String MAX_SPEED = "max_speed";
+        public static final String MAX_LEAN_ANGLE = "max_lean_angle";
     }
 }

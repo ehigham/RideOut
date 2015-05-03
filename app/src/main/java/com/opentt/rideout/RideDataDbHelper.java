@@ -42,30 +42,30 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_DATA_TABLE =
             "CREATE TABLE IF NOT EXISTS " + RideDataContract.RideData.TABLE_NAME + " (" +
-                    RideData._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    RideData.COLUMN_NAME_RIDE_ID            + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ALTITUDE           + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_SPEED              + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_BEARING            + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_X     + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_Y     + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_ACCELERATION_Z     + TEXT_TYPE + COMMA_SEP +
-                    RideData.COLUMN_NAME_LEAN_ANGLE         + TEXT_TYPE + " )";
+                    RideData._ID    + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RideData.RIDE_ID        + TEXT_TYPE + COMMA_SEP +
+                    RideData.TIME_STAMP     + TEXT_TYPE + COMMA_SEP +
+                    RideData.LATITUDE       + TEXT_TYPE + COMMA_SEP +
+                    RideData.LONGITUDE      + TEXT_TYPE + COMMA_SEP +
+                    RideData.ALTITUDE       + TEXT_TYPE + COMMA_SEP +
+                    RideData.SPEED          + TEXT_TYPE + COMMA_SEP +
+                    RideData.BEARING        + TEXT_TYPE + COMMA_SEP +
+                    RideData.ACCELERATION_X + TEXT_TYPE + COMMA_SEP +
+                    RideData.ACCELERATION_Y + TEXT_TYPE + COMMA_SEP +
+                    RideData.ACCELERATION_Z + TEXT_TYPE + COMMA_SEP +
+                    RideData.LEAN_ANGLE     + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_SUMMARY_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + RideSummary.TABLE_NAME + " (" +
-                    RideSummary._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    RideSummary.COLUMN_NAME_RIDE_ID            + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_LATITUDE           + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_LONGITUDE          + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_DURATION           + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_MAX_SPEED          + TEXT_TYPE + COMMA_SEP +
-                    RideSummary.COLUMN_NAME_MAX_LEAN_ANGLE     + TEXT_TYPE + " )";
+            "CREATE TABLE IF NOT EXISTS "  + RideSummary.TABLE_NAME + " (" +
+                    RideSummary._ID        + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    RideSummary.RIDE_ID            + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.LATITUDE           + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.LONGITUDE          + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.TIME_STAMP         + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.DURATION           + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.DISTANCE_TRAVELLED + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.MAX_SPEED          + TEXT_TYPE + COMMA_SEP +
+                    RideSummary.MAX_LEAN_ANGLE     + TEXT_TYPE + " )";
 
 
     private static final String SQL_DELETE_DATA_TABLE =
@@ -181,7 +181,7 @@ public class RideDataDbHelper extends SQLiteOpenHelper{
         boolean result = true;
 
         String query = "SELECT COUNT(*) FROM " + RideData.TABLE_NAME +
-                " WHERE " + RideData.COLUMN_NAME_RIDE_ID + " = ? ";
+                " WHERE " + RideData.RIDE_ID + " = ? ";
 
         Cursor cursor = db.rawQuery(query,
                 new String[]{Integer.toString(rideID)});

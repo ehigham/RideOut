@@ -180,12 +180,12 @@ public class PlaybackOverviewFragment extends Fragment
             // Check to see if there are ride entries
             if ( !mDbHelper.isDataTableEmpty(db) ){
 
-                String[] projection = {RideSummary.COLUMN_NAME_RIDE_ID,
-                                       RideSummary.COLUMN_NAME_LATITUDE,
-                                       RideSummary.COLUMN_NAME_LONGITUDE,
-                                       RideSummary.COLUMN_NAME_DURATION,
-                                       RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED};
-                String sortOrder = RideSummary.COLUMN_NAME_RIDE_ID + " ASC";
+                String[] projection = {RideSummary.RIDE_ID,
+                                       RideSummary.LATITUDE,
+                                       RideSummary.LONGITUDE,
+                                       RideSummary.DURATION,
+                                       RideSummary.DISTANCE_TRAVELLED};
+                String sortOrder = RideSummary.RIDE_ID + " ASC";
 
                 try{
 
@@ -195,18 +195,12 @@ public class PlaybackOverviewFragment extends Fragment
 
                     if ((cursor != null) && (cursor.moveToFirst())) {
 
-
                         // Get column numbers for projected columns
-                        int ColumnID = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_RIDE_ID);
-                        int ColumnLat = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LATITUDE);
-                        int ColumnLng = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_LONGITUDE);
-                        int ColumnDur = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DURATION);
-                        int ColumnDis = cursor
-                                .getColumnIndexOrThrow(RideSummary.COLUMN_NAME_DISTANCE_TRAVELLED);
+                        int ColumnID = cursor.getColumnIndexOrThrow(RideSummary.RIDE_ID);
+                        int ColumnLat = cursor.getColumnIndexOrThrow(RideSummary.LATITUDE);
+                        int ColumnLng = cursor.getColumnIndexOrThrow(RideSummary.LONGITUDE);
+                        int ColumnDur = cursor.getColumnIndexOrThrow(RideSummary.DURATION);
+                        int ColumnDis = cursor.getColumnIndexOrThrow(RideSummary.DISTANCE_TRAVELLED);
 
                         do{
 
