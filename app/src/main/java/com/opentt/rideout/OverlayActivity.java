@@ -25,7 +25,7 @@ import android.view.MenuItem;
 
 
 public class OverlayActivity extends Activity
-    implements GraphFragment.onPlotDataListener {
+implements myRideIdCheck {
 
     private final String TAG = "OverlayActivity";
     private int rideID;
@@ -33,7 +33,6 @@ public class OverlayActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_overlay);
 
         Intent intent = getIntent();
 
@@ -41,8 +40,16 @@ public class OverlayActivity extends Activity
             rideID =  intent.getIntExtra("RideID", 1);
             Log.i(TAG, "Received intent: " + rideID);
         } catch (NullPointerException ex){
+            ex.printStackTrace();
             throw new NullPointerException("Failed to get RideID from OverviewActivity");
         }
+
+        setContentView(R.layout.activity_overlay);
+    }
+
+    @Override
+    public int getRideID(){
+        return rideID;
     }
 
     @Override
@@ -65,10 +72,5 @@ public class OverlayActivity extends Activity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void putID(int rideID) {
-
     }
 }

@@ -49,12 +49,13 @@ public class PolylineFragment extends Fragment
         // Required empty public constructor
     }
 
+    private myRideIdCheck activityListener;
+
     /** The GoogleMap set in onMapReady */
     private GoogleMap mMap;
     private View mapView;
 
-    private int RideID = 1;
-
+    private int RideID;
 
     /** Polyline */
     Polyline mPolyline;
@@ -62,6 +63,7 @@ public class PolylineFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mapView  = inflater.inflate(R.layout.fragment_playback_overview, container, false);
 
         MapFragment mapFragment =
@@ -80,12 +82,13 @@ public class PolylineFragment extends Fragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        /*try{
-            activityListener = (OnMarkerWindowClickListener) activity;
+        try{
+            activityListener = (myRideIdCheck) activity;
+            RideID = activityListener.getRideID();
         } catch (ClassCastException ex){
             throw new ClassCastException(activity.toString() +
-                    " does not implement OnMarkerWindowClickListener");
-        }*/
+                    " does not implement myIdCheck");
+        }
     }
 
     @Override
@@ -95,14 +98,13 @@ public class PolylineFragment extends Fragment
         // Hide the zoom controls as the button panel will cover it.
         mMap.getUiSettings().setZoomControlsEnabled(false);
 
-        // Add ride markers to the map if they exist and zoom to encompass
         new AddPolylineToMap().execute();
     }
 
-    /** AsyncTask AddMarkersToMap
+    /** AsyncTask AddPolylineToMap
      *  Takes input arguments: void
-     *  Outputs: integer number of rides found
-     *  Requires: List<Markers>
+     *  Outputs: null
+     *  Requires: null
      */
     private class AddPolylineToMap extends AsyncTask<Void, Void, Void> {
 
@@ -121,6 +123,7 @@ public class PolylineFragment extends Fragment
             // Check to see if there are ride entries
             if (!mDbHelper.isDataTableEmpty(db)) {
 
+                // Build a database query
                 String[] projection = {RideData.LATITUDE,
                         RideData.LONGITUDE,};
                 String selection = RideData.RIDE_ID + " = ? ";
@@ -140,14 +143,11 @@ public class PolylineFragment extends Fragment
                         double thisLNG;
 
                         // Get projection column numbers
-                        int ColumnLat = cursor
-                                .getColumnIndexOrThrow(RideData.LATITUDE);
-                        int ColumnLng = cursor
-                                .getColumnIndexOrThrow(RideData.LONGITUDE);
+                        int ColumnLat = cursor.getColumnIndexOrThrow(RideData.LATITUDE);
+                        int ColumnLng = cursor.getColumnIndexOrThrow(RideData.LONGITUDE);
 
                         // LatLng for bounds and PolylineOptions
                         LatLng thisLatLng;
-
 
                         do {
 
@@ -174,7 +174,7 @@ public class PolylineFragment extends Fragment
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            polylineOptions.width(5.0f);
+            polylineOptions.width(10.0f);
             mPolyline = mMap.addPolyline(polylineOptions);
             mPolyline.setVisible(true);
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),50));

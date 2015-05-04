@@ -23,16 +23,16 @@
         android:layout_width="wrap_content"
         android:layout_height="250dp"
         android:name="com.opentt.rideout.GraphFragment"
-        android:id="@+id/fragment"
+        android:id="@+id/graph_fragment"
         tools:layout="@layout/fragment_graph"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/fragment2" />
+        android:layout_below="@+id/polyline_fragment" />
 
     <fragment
         android:layout_width="wrap_content"
         android:layout_height="300dp"
         android:name="com.opentt.rideout.PolylineFragment"
-        android:id="@+id/fragment2"
+        android:id="@+id/polyline_fragment"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         tools:layout="@layout/fragment_playback_overview" />

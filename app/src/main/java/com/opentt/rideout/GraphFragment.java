@@ -41,16 +41,9 @@ public class GraphFragment extends Fragment {
         //Blank Constructor
     }
 
-    /** Interface for communication with main activity
-     * Instructs GraphFragment which rideID we are plotting
-     */
-    interface onPlotDataListener{
-        public void putID(int rideID);
-    }
+    myRideIdCheck activityListener;
 
     private final String TAG = "GraphFragment";
-
-    onPlotDataListener activityListener;
 
     /** Data series for the plot */
     private LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
@@ -59,20 +52,7 @@ public class GraphFragment extends Fragment {
     private GraphView graph;
 
     /** The RideID to plot */
-    private int rideID = 1;
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try{
-            activityListener = (onPlotDataListener) activity;
-        } catch (ClassCastException ex){
-            throw new ClassCastException(activity.toString() +
-                    " does not implement onPlotDataListener");
-        }
-    }
+    private int rideID;
 
     @Nullable
     @Override
@@ -88,8 +68,19 @@ public class GraphFragment extends Fragment {
         graph = (GraphView) view.findViewById(R.id.data_plot);
 
         new AddFieldToGraph().execute(RideData.SPEED);
+    }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
 
+        try{
+            activityListener = (myRideIdCheck) activity;
+            rideID = activityListener.getRideID();
+        } catch (ClassCastException ex){
+            throw new ClassCastException(activity.toString() +
+                    " does not implement myIdCheck");
+        }
     }
 
     private class AddFieldToGraph extends AsyncTask<String,Void,Void>{
